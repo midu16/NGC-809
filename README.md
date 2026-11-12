@@ -1,4 +1,4 @@
-# CRs and tools to re-create the NGC-809 25 % / 75 % SR-IOV VF split tests on CWL
+# CRs and tools to re-create the NGC-809 25 % / 75 % SR-IOV VF split tests
 
 This directory has everything needed to rebuild and re-run the testing: 
 - **VF0 = 25 %** (6250 Mbit/s): `iperf3`;
