@@ -1,0 +1,49 @@
+---
+# NGC-809 site values — the ONLY file to edit for a new site.
+# Copy example-overlays-config/template/ to example-overlays-config/<site>/ and replace every <...>.
+# Keep the types shown: integers unquoted, quoted strings quoted. See ../cwl/site-values.yaml for a filled-in example.
+# Not applied to the cluster (local-config); consumed by ../../components/site-values.
+apiVersion: ngc809.local/v1
+kind: SiteValues
+metadata:
+  name: site-values
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  namespace: <namespace>                   # test namespace, e.g. dpdk
+
+  server:                                  # runs testpmd (VF1 sink) + iperf3-server (VF0)
+    hostname: <server-node-hostname>
+  client:                                  # runs trex (VF1 source) + iperf3-client (VF0); needs a PerformanceProfile
+    hostname: <client-node-hostname>
+    runtimeClassName: <performance-profile-runtime-class>
+    nodeSelector:                          # replaces the trex pod's whole nodeSelector
+      <node-role-label>: ""
+
+  nic:                                     # same PF model/name on both nodes
+    pfName: <pf-interface-name>            # e.g. ens1f0np0
+    vendorId: "<pci-vendor-id>"            # e.g. "15b3" (Mellanox)
+    deviceId: "<pci-device-id>"            # e.g. "101f" (ConnectX-6 Lx)
+    totalVfs: 0                            # <int> VFs to create on the PF (>= 2)
+    portBandwidthGb: "<int>"               # PF link speed in Gbit/s, for TRex
+  vlan: 0                                  # <int> VLAN allowed on both switch ports
+
+  vf0:                                     # 25 %: iperf3
+    rateMbps: 0                            # <int> min = max tx rate, Mbit/s
+    serverAddress: <ip>/<prefix>           # iperf3-server static IP
+    clientAddress: <ip>/<prefix>           # iperf3-client static IP
+  vf1:                                     # 75 %: TRex -> testpmd -> TRex
+    rateMbps: 0                            # <int>
+    serverSubnet: <cidr>                   # host-local IPAM, testpmd side
+    clientSubnet: <cidr>                   # host-local IPAM, trex side
+    trexMac: <mac>                         # Multus MAC of trex net1
+    testpmdMac: <mac>                      # Multus MAC of testpmd net1
+
+  images:
+    trex: <trex-image>
+    testpmd: <testpmd-image>
+    iperf3: <iperf3-image>
+
+  trex:
+    cpus: "<int>"                          # exclusive CPUs; must match trex_cfg.yaml threads
+    hugepages1Gi: <quantity>               # e.g. 2Gi

@@ -1,0 +1,83 @@
+# SR-IOV operator: map VF0 / VF1 of each node to kubelet resources (externallyManaged: nmstate owns the VFs).
+# WARNING: applying/changing these makes sriov-network-config-daemon rebind VFs that are attached to running pods.
+# Apply BEFORE the pods and wait until both SriovNetworkNodeStates are Succeeded and the resources are allocatable.
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: ngc809-master0-nic2-vf
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  externallyManaged: true
+  isRdma: true
+  nicSelector:
+    deviceID: <pf-device-id>
+    pfNames:
+    - <pf-name>#1-1
+    vendor: <pf-vendor-id>
+  nodeSelector:
+    kubernetes.io/hostname: <server-hostname>
+  numVfs: 0   # spec.nic.totalVfs
+  priority: 99
+  resourceName: ngc809_srv_nic2_vf
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: ngc809-nic2-vf1-tenant
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  externallyManaged: true
+  isRdma: true
+  nicSelector:
+    deviceID: <pf-device-id>
+    pfNames:
+    - <pf-name>#1-1
+    vendor: <pf-vendor-id>
+  nodeSelector:
+    kubernetes.io/hostname: <client-hostname>
+  numVfs: 0   # spec.nic.totalVfs
+  priority: 99
+  resourceName: ngc809_nic2_vf1
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: ngc809-m0-vf0-iperf
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  externallyManaged: true
+  isRdma: false
+  nicSelector:
+    deviceID: <pf-device-id>
+    pfNames:
+    - <pf-name>#0-0
+    vendor: <pf-vendor-id>
+  nodeSelector:
+    kubernetes.io/hostname: <server-hostname>
+  numVfs: 0   # spec.nic.totalVfs
+  priority: 99
+  resourceName: ngc809_m0_vf0
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: ngc809-aw1-vf0-iperf
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  externallyManaged: true
+  isRdma: false
+  nicSelector:
+    deviceID: <pf-device-id>
+    pfNames:
+    - <pf-name>#0-0
+    vendor: <pf-vendor-id>
+  nodeSelector:
+    kubernetes.io/hostname: <client-hostname>
+  numVfs: 0   # spec.nic.totalVfs
+  priority: 99
+  resourceName: ngc809_aw1_vf0

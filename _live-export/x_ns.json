@@ -1,0 +1,32 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"name\":\"dpdk\"}}\n",
+            "openshift.io/sa.scc.mcs": "s0:c29,c19",
+            "openshift.io/sa.scc.supplemental-groups": "1000850000/10000",
+            "openshift.io/sa.scc.uid-range": "1000850000/10000",
+            "security.openshift.io/MinimallySufficientPodSecurityStandard": "restricted"
+        },
+        "creationTimestamp": "2026-11-05T18:13:35Z",
+        "labels": {
+            "kubernetes.io/metadata.name": "dpdk",
+            "pod-security.kubernetes.io/audit": "restricted",
+            "pod-security.kubernetes.io/audit-version": "latest",
+            "pod-security.kubernetes.io/warn": "restricted",
+            "pod-security.kubernetes.io/warn-version": "latest"
+        },
+        "name": "dpdk",
+        "resourceVersion": "1414516",
+        "uid": "6e634f6a-3f22-45f3-9aa9-5069e0d84c74"
+    },
+    "spec": {
+        "finalizers": [
+            "kubernetes"
+        ]
+    },
+    "status": {
+        "phase": "Active"
+    }
+}

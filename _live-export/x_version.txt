@@ -1,0 +1,4 @@
+Client Version: 4.22.8
+Kustomize Version: v5.7.1
+Server Version: 4.22.3
+Kubernetes Version: v1.35.5

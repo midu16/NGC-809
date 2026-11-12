@@ -1,0 +1,43 @@
+# NGC-809 — exported live from CWL (OCP 4.22.3) on 2026-11-11 by ngc-809/tools/clean_export.py.
+# TRex config template, port bandwidth and STL profile mounted into the trex pod.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trex-config-template
+  namespace: dpdk
+data:
+  trex_cfg.yaml: "- port_limit: 1\n  version: 2\n  interfaces:\n    - \"${PCIDEVICE_OPENSHIFT_IO_NGC809_NIC2_VF1}\"\n  port_bandwidth_gb:\
+    \ ${PORT_BANDWIDTH_GB}\n  port_info:\n    - ip: 10.10.10.2\n      default_gw: 10.10.10.1\n  platform:\n    master_thread_id:\
+    \ $MASTER\n    latency_thread_id: $LATENCY\n    dual_if:\n      - socket: ${SOCKET}\n        threads: [${CPU}]\n"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trex-info-for-config
+  namespace: dpdk
+data:
+  PORT_BANDWIDTH_GB: '25'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trex-tests
+  namespace: dpdk
+data:
+  testpmd.py: "from trex_stl_lib.api import *\nfrom testpmd_addr import *\n\n# Wild local MAC \u2014 must match trex-pod Multus\
+    \ annotation (article mac_localport0)\nmac_localport0 = '50:00:00:00:00:01'\n# Article also defines mac_localport1 / telco1\
+    \ for dual-NIC loopback;\n# this deployment uses a single VF on port 0 only (no port 1).\n\nclass STLS1(object):\n\n \
+    \   def __init__(self):\n        # 1500 B L2 (FCS added by HW). 64 B frames saturate CPU (~8\u20139 Gbit/s)\n        #\
+    \ before the 75% cap. 2026-11-06 line-rate proof used 1500 B.\n        self.fsize = 1500\n        self.number = 0\n\n\
+    \    def create_stream(self, direction=0):\n        self.number = self.number + 1\n        # direction ignored \u2014\
+    \ only port 0 exists on this TRex pod\n        # 50:\u2026:01 \u2192 60:\u2026:01, UDP 1026 \u2192 15 (same tuple as the\
+    \ 2026-11-06 proof)\n        base_pkt = Ether(dst=mac_telco0, src=mac_localport0) / IP(src=\"16.0.0.1\", dst=ip_telco0)\
+    \ / UDP(dport=15, sport=1026)\n        pad_len = self.fsize - 4 - len(base_pkt)  # HW adds 4-byte FCS\n        if pad_len\
+    \ < 0:\n            pad_len = 0\n        return STLStream(\n            packet=STLPktBuilder(pkt=base_pkt / ('x' * pad_len)),\n\
+    \            mode=STLTXCont())\n\n    def get_streams(self, direction=0, **kwargs):\n        # Article uses range(14)\
+    \ for -c 14. Pod Guaranteed cpu:4 \u2192\n        # MASTER + LATENCY + ~2 TX threads \u2192 keep 2 streams (match -c 2).\n\
+    \        s = []\n        for i in range(2):\n            s.append(self.create_stream(direction=0))\n        return s\n\
+    \ndef register():\n    return STLS1()\n"
+  testpmd_addr.py: "# Peer = testpmd on master-0 (wild Multus MAC \u2014 not HW MAC)\nmac_telco0 = '60:00:00:00:00:01'\n#\
+    \ Article: \"we don't care of the IP in this phase\" (L2 / MAC is what matters)\nip_telco0  = '10.0.0.1'\n"

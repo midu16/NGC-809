@@ -1,0 +1,62 @@
+# VF0 (25 %) workloads: iperf3 server (server node) and client (client node).
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf3-server
+  namespace: <namespace>
+  labels:
+    app: iperf3
+  annotations:
+    k8s.v1.cni.cncf.io/networks: '[{"name": "ngc809-vf0-25-m0", "namespace": "<namespace>"}]'
+spec:
+  containers:
+  - command:
+    - iperf3
+    - -s
+    - -B
+    - <vf0-server-ip>  # from spec.vf0.serverAddress, prefix stripped
+    image: <iperf3-image>
+    name: iperf3
+    resources:
+      limits:
+        openshift.io/ngc809_m0_vf0: '1'
+      requests:
+        cpu: '2'
+        memory: 512Mi
+        openshift.io/ngc809_m0_vf0: '1'
+  nodeName: <server-hostname>
+  terminationGracePeriodSeconds: 5
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+    operator: Exists
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/control-plane
+    operator: Exists
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf3-client
+  namespace: <namespace>
+  labels:
+    app: iperf3
+  annotations:
+    k8s.v1.cni.cncf.io/networks: '[{"name": "ngc809-vf0-25-aw1", "namespace": "<namespace>"}]'
+spec:
+  containers:
+  - command:
+    - sleep
+    - infinity
+    image: <iperf3-image>
+    name: iperf3
+    resources:
+      limits:
+        openshift.io/ngc809_aw1_vf0: '1'
+      requests:
+        cpu: '2'
+        memory: 512Mi
+        openshift.io/ngc809_aw1_vf0: '1'
+  nodeName: <client-hostname>
+  terminationGracePeriodSeconds: 5

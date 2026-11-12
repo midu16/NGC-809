@@ -1,0 +1,48 @@
+---
+# NGC-809 on CWL (OCP 4.22.3) — the ONLY file with site-specific values.
+# Values match the live export of 2026-11-11 (see ../../../_live-export/).
+# Not applied to the cluster (local-config); consumed by ../../components/site-values.
+apiVersion: ngc809.local/v1
+kind: SiteValues
+metadata:
+  name: site-values
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  namespace: dpdk
+
+  server:                                  # runs testpmd (VF1 sink) + iperf3-server (VF0)
+    hostname: master-0.cwl.integration.core.bos2.lab
+  client:                                  # runs trex (VF1 source) + iperf3-client (VF0)
+    hostname: appworker-1.cwl.integration.core.bos2.lab
+    runtimeClassName: performance-pao-worker-profile-appworker-mcp-a
+    nodeSelector:
+      node-role.kubernetes.io/appworker-mcp-a: ""
+
+  nic:                                     # same PF model/name on both nodes
+    pfName: ens1f0np0                      # ConnectX-6 Lx, 0000:12:00.0
+    vendorId: "15b3"
+    deviceId: "101f"
+    totalVfs: 2
+    portBandwidthGb: "25"                  # TRex PORT_BANDWIDTH_GB
+  vlan: 206                                # switch trunk VLAN on both ports
+
+  vf0:                                     # 25 %: iperf3
+    rateMbps: 6250                         # min = max tx rate
+    serverAddress: 10.10.30.1/24           # iperf3-server (static IPAM; -B uses the IP part)
+    clientAddress: 10.10.30.2/24           # iperf3-client
+  vf1:                                     # 75 %: TRex -> testpmd -> TRex
+    rateMbps: 18750
+    serverSubnet: 10.0.2.0/24              # host-local IPAM, testpmd side
+    clientSubnet: 10.0.1.0/24              # host-local IPAM, trex side
+    trexMac: 50:00:00:00:00:01             # Multus MAC of trex net1 (also in trex-tests)
+    testpmdMac: 60:00:00:00:00:01          # Multus MAC of testpmd net1 (also in trex-tests)
+
+  images:
+    trex: quay.io/midu/trex:2.87-ofed5.8
+    testpmd: quayregistry-quay-quay-enterprise.apps.hubcluster-hp.integration.core.bos2.lab/quayadmin/nrho-26.8/rhel9/testpmd:25.11-mlx5
+    iperf3: quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c
+
+  trex:
+    cpus: "4"                              # exclusive CPUs; must match trex_cfg.yaml threads
+    hugepages1Gi: 2Gi

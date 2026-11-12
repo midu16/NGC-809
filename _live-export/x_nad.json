@@ -1,0 +1,85 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "k8s.cni.cncf.io/v1",
+            "kind": "NetworkAttachmentDefinition",
+            "metadata": {
+                "annotations": {
+                    "k8s.v1.cni.cncf.io/resourceName": "openshift.io/ngc809_srv_nic2_vf",
+                    "sriovnetwork.openshift.io/owner-ref": "SriovNetwork.sriovnetwork.openshift.io/openshift-sriov-network-operator/ngc809-master0-sink"
+                },
+                "creationTimestamp": "2026-11-05T18:13:35Z",
+                "generation": 2,
+                "name": "ngc809-master0-sink",
+                "namespace": "dpdk",
+                "resourceVersion": "2934372",
+                "uid": "dad43d1f-a10c-47d0-a69c-cb4db1f0bdfd"
+            },
+            "spec": {
+                "config": "{\n    \"cniVersion\": \"1.0.0\",\n    \"name\": \"ngc809-master0-sink\",\n    \"type\": \"sriov\",\n    \"vlan\": 206,\n    \"spoofchk\": \"off\",\n    \"trust\": \"on\",\n    \"vlanQoS\": 0,\n    \"min_tx_rate\": 18750,\n    \"max_tx_rate\": 18750,\n    \"logLevel\": \"info\",\n    \"ipam\": {\n        \"type\": \"host-local\",\n        \"ranges\": [\n            [\n                {\n                    \"subnet\": \"10.0.2.0/24\"\n                }\n            ]\n        ],\n        \"dataDir\": \"/run/my-orchestrator/container-ipam-state-sink\"\n    }\n}"
+            }
+        },
+        {
+            "apiVersion": "k8s.cni.cncf.io/v1",
+            "kind": "NetworkAttachmentDefinition",
+            "metadata": {
+                "annotations": {
+                    "k8s.v1.cni.cncf.io/resourceName": "openshift.io/ngc809_nic2_vf1",
+                    "sriovnetwork.openshift.io/owner-ref": "SriovNetwork.sriovnetwork.openshift.io/openshift-sriov-network-operator/ngc809-tenant-75"
+                },
+                "creationTimestamp": "2026-11-05T18:16:49Z",
+                "generation": 1,
+                "name": "ngc809-tenant-75",
+                "namespace": "dpdk",
+                "resourceVersion": "1339725",
+                "uid": "8efe2352-ad7d-4d0d-863d-e100ef959c3b"
+            },
+            "spec": {
+                "config": "{\n    \"cniVersion\": \"1.0.0\",\n    \"name\": \"ngc809-tenant-75\",\n    \"type\": \"sriov\",\n    \"vlan\": 206,\n    \"spoofchk\": \"off\",\n    \"trust\": \"on\",\n    \"vlanQoS\": 0,\n    \"min_tx_rate\": 18750,\n    \"max_tx_rate\": 18750,\n    \"logLevel\": \"info\",\n    \"ipam\": {\n        \"type\": \"host-local\",\n        \"ranges\": [\n            [\n                {\n                    \"subnet\": \"10.0.1.0/24\"\n                }\n            ]\n        ],\n        \"dataDir\": \"/run/my-orchestrator/container-ipam-state-1\"\n    }\n}"
+            }
+        },
+        {
+            "apiVersion": "k8s.cni.cncf.io/v1",
+            "kind": "NetworkAttachmentDefinition",
+            "metadata": {
+                "annotations": {
+                    "k8s.v1.cni.cncf.io/resourceName": "openshift.io/ngc809_aw1_vf0",
+                    "sriovnetwork.openshift.io/owner-ref": "SriovNetwork.sriovnetwork.openshift.io/openshift-sriov-network-operator/ngc809-vf0-25-aw1"
+                },
+                "creationTimestamp": "2026-11-11T12:10:49Z",
+                "generation": 1,
+                "name": "ngc809-vf0-25-aw1",
+                "namespace": "dpdk",
+                "resourceVersion": "4607250",
+                "uid": "b53838e7-f12e-4422-82c0-3d7b6f153957"
+            },
+            "spec": {
+                "config": "{\n    \"cniVersion\": \"1.0.0\",\n    \"name\": \"ngc809-vf0-25-aw1\",\n    \"type\": \"sriov\",\n    \"vlan\": 206,\n    \"spoofchk\": \"off\",\n    \"trust\": \"off\",\n    \"vlanQoS\": 0,\n    \"min_tx_rate\": 6250,\n    \"max_tx_rate\": 6250,\n    \"logLevel\": \"info\",\n    \"ipam\": {\n        \"type\": \"static\",\n        \"addresses\": [\n            {\n                \"address\": \"10.10.30.2/24\"\n            }\n        ]\n    }\n}"
+            }
+        },
+        {
+            "apiVersion": "k8s.cni.cncf.io/v1",
+            "kind": "NetworkAttachmentDefinition",
+            "metadata": {
+                "annotations": {
+                    "k8s.v1.cni.cncf.io/resourceName": "openshift.io/ngc809_m0_vf0",
+                    "sriovnetwork.openshift.io/owner-ref": "SriovNetwork.sriovnetwork.openshift.io/openshift-sriov-network-operator/ngc809-vf0-25-m0"
+                },
+                "creationTimestamp": "2026-11-11T12:10:49Z",
+                "generation": 1,
+                "name": "ngc809-vf0-25-m0",
+                "namespace": "dpdk",
+                "resourceVersion": "4607246",
+                "uid": "ef3a37d9-6eb4-41b7-b9d2-34f2dfac78f5"
+            },
+            "spec": {
+                "config": "{\n    \"cniVersion\": \"1.0.0\",\n    \"name\": \"ngc809-vf0-25-m0\",\n    \"type\": \"sriov\",\n    \"vlan\": 206,\n    \"spoofchk\": \"off\",\n    \"trust\": \"off\",\n    \"vlanQoS\": 0,\n    \"min_tx_rate\": 6250,\n    \"max_tx_rate\": 6250,\n    \"logLevel\": \"info\",\n    \"ipam\": {\n        \"type\": \"static\",\n        \"addresses\": [\n            {\n                \"address\": \"10.10.30.1/24\"\n            }\n        ]\n    }\n}"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

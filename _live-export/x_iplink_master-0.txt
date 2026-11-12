@@ -1,0 +1,5 @@
+2: ens1f0np0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether a0:88:c2:99:fc:72 brd ff:ff:ff:ff:ff:ff promiscuity 0 allmulti 0 minmtu 68 maxmtu 9978 addrgenmode none numtxqueues 768 numrxqueues 63 gso_max_size 65536 gso_max_segs 65535 tso_max_size 524280 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 portname p0 switchid 72fc990003c288a0 parentbus pci parentdev 0000:12:00.0 
+    vf 0     link/ether 3a:cb:de:3a:9d:33 brd ff:ff:ff:ff:ff:ff, vlan 206, tx rate 6250 (Mbps), max_tx_rate 6250Mbps, min_tx_rate 6250Mbps, spoof checking off, link-state auto, trust off, query_rss off
+    vf 1     link/ether 60:00:00:00:00:01 brd ff:ff:ff:ff:ff:ff, vlan 206, tx rate 18750 (Mbps), max_tx_rate 18750Mbps, min_tx_rate 18750Mbps, spoof checking off, link-state auto, trust on, query_rss off
+    altname enp18s0f0np0

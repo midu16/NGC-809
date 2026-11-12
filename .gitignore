@@ -1,0 +1,39 @@
+# --- Generated output (re-create with: python3 tools/render.py kustomize/example-overlays-config/<site>)
+/rendered/
+
+# --- Local test runs: scripts/*.sh take an <out> dir; keep results out of the repo
+/out/
+/results/
+/runs/
+*.log
+
+# --- Backups taken before edits
+*.bak
+*.bak.*
+*.orig
+*.rej
+
+# --- Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# --- Kubeconfigs / credentials must never be committed
+kubeconfig*
+*.kubeconfig
+*.pem
+*.key
+.env
+
+# --- Editors / OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# --- Claude Code local settings
+.claude/settings.local.json
+
+# NOTE: do NOT add a bare "tmp/" pattern — pod-files/trex/tmp/ holds files copied into the trex pod.

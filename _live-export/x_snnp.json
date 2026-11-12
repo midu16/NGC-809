@@ -1,0 +1,138 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "sriovnetwork.openshift.io/v1",
+            "kind": "SriovNetworkNodePolicy",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"sriovnetwork.openshift.io/v1\",\"kind\":\"SriovNetworkNodePolicy\",\"metadata\":{\"annotations\":{},\"name\":\"ngc809-master0-nic2-vf\",\"namespace\":\"openshift-sriov-network-operator\"},\"spec\":{\"deviceType\":\"netdevice\",\"externallyManaged\":true,\"isRdma\":true,\"nicSelector\":{\"deviceID\":\"101f\",\"pfNames\":[\"ens1f0np0#0-0\"],\"vendor\":\"15b3\"},\"nodeSelector\":{\"kubernetes.io/hostname\":\"master-0.cwl.integration.core.bos2.lab\"},\"numVfs\":2,\"priority\":99,\"resourceName\":\"ngc809_srv_nic2_vf\"}}\n"
+                },
+                "creationTimestamp": "2026-11-05T18:08:30Z",
+                "generation": 4,
+                "name": "ngc809-master0-nic2-vf",
+                "namespace": "openshift-sriov-network-operator",
+                "resourceVersion": "4587199",
+                "uid": "a09f1a54-c5b4-44d9-a1c7-f16b59015d31"
+            },
+            "spec": {
+                "deviceType": "netdevice",
+                "externallyManaged": true,
+                "isRdma": true,
+                "nicSelector": {
+                    "deviceID": "101f",
+                    "pfNames": [
+                        "ens1f0np0#1-1"
+                    ],
+                    "vendor": "15b3"
+                },
+                "nodeSelector": {
+                    "kubernetes.io/hostname": "master-0.cwl.integration.core.bos2.lab"
+                },
+                "numVfs": 2,
+                "priority": 99,
+                "resourceName": "ngc809_srv_nic2_vf"
+            }
+        },
+        {
+            "apiVersion": "sriovnetwork.openshift.io/v1",
+            "kind": "SriovNetworkNodePolicy",
+            "metadata": {
+                "creationTimestamp": "2026-11-05T18:15:01Z",
+                "generation": 1,
+                "name": "ngc809-nic2-vf1-tenant",
+                "namespace": "openshift-sriov-network-operator",
+                "resourceVersion": "1338914",
+                "uid": "88a727cc-91c6-4c6f-b565-3674ee2bb848"
+            },
+            "spec": {
+                "deviceType": "netdevice",
+                "externallyManaged": true,
+                "isRdma": true,
+                "nicSelector": {
+                    "deviceID": "101f",
+                    "pfNames": [
+                        "ens1f0np0#1-1"
+                    ],
+                    "vendor": "15b3"
+                },
+                "nodeSelector": {
+                    "kubernetes.io/hostname": "appworker-1.cwl.integration.core.bos2.lab"
+                },
+                "numVfs": 2,
+                "priority": 99,
+                "resourceName": "ngc809_nic2_vf1"
+            }
+        },
+        {
+            "apiVersion": "sriovnetwork.openshift.io/v1",
+            "kind": "SriovNetworkNodePolicy",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"sriovnetwork.openshift.io/v1\",\"kind\":\"SriovNetworkNodePolicy\",\"metadata\":{\"annotations\":{},\"name\":\"ngc809-m0-vf0-iperf\",\"namespace\":\"openshift-sriov-network-operator\"},\"spec\":{\"deviceType\":\"netdevice\",\"externallyManaged\":true,\"nicSelector\":{\"deviceID\":\"101f\",\"pfNames\":[\"ens1f0np0#0-0\"],\"vendor\":\"15b3\"},\"nodeSelector\":{\"kubernetes.io/hostname\":\"master-0.cwl.integration.core.bos2.lab\"},\"numVfs\":2,\"priority\":99,\"resourceName\":\"ngc809_m0_vf0\"}}\n"
+                },
+                "creationTimestamp": "2026-11-11T12:10:48Z",
+                "generation": 1,
+                "name": "ngc809-m0-vf0-iperf",
+                "namespace": "openshift-sriov-network-operator",
+                "resourceVersion": "4607240",
+                "uid": "1f91142c-ac28-4b0c-b661-10d63c9fc2dc"
+            },
+            "spec": {
+                "deviceType": "netdevice",
+                "externallyManaged": true,
+                "isRdma": false,
+                "nicSelector": {
+                    "deviceID": "101f",
+                    "pfNames": [
+                        "ens1f0np0#0-0"
+                    ],
+                    "vendor": "15b3"
+                },
+                "nodeSelector": {
+                    "kubernetes.io/hostname": "master-0.cwl.integration.core.bos2.lab"
+                },
+                "numVfs": 2,
+                "priority": 99,
+                "resourceName": "ngc809_m0_vf0"
+            }
+        },
+        {
+            "apiVersion": "sriovnetwork.openshift.io/v1",
+            "kind": "SriovNetworkNodePolicy",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"sriovnetwork.openshift.io/v1\",\"kind\":\"SriovNetworkNodePolicy\",\"metadata\":{\"annotations\":{},\"name\":\"ngc809-aw1-vf0-iperf\",\"namespace\":\"openshift-sriov-network-operator\"},\"spec\":{\"deviceType\":\"netdevice\",\"externallyManaged\":true,\"nicSelector\":{\"deviceID\":\"101f\",\"pfNames\":[\"ens1f0np0#0-0\"],\"vendor\":\"15b3\"},\"nodeSelector\":{\"kubernetes.io/hostname\":\"appworker-1.cwl.integration.core.bos2.lab\"},\"numVfs\":2,\"priority\":99,\"resourceName\":\"ngc809_aw1_vf0\"}}\n"
+                },
+                "creationTimestamp": "2026-11-11T12:10:48Z",
+                "generation": 1,
+                "name": "ngc809-aw1-vf0-iperf",
+                "namespace": "openshift-sriov-network-operator",
+                "resourceVersion": "4607242",
+                "uid": "58061c16-bf13-4710-ac68-7179489caec3"
+            },
+            "spec": {
+                "deviceType": "netdevice",
+                "externallyManaged": true,
+                "isRdma": false,
+                "nicSelector": {
+                    "deviceID": "101f",
+                    "pfNames": [
+                        "ens1f0np0#0-0"
+                    ],
+                    "vendor": "15b3"
+                },
+                "nodeSelector": {
+                    "kubernetes.io/hostname": "appworker-1.cwl.integration.core.bos2.lab"
+                },
+                "numVfs": 2,
+                "priority": 99,
+                "resourceName": "ngc809_aw1_vf0"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

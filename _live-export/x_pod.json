@@ -1,0 +1,1353 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "cpu-load-balancing.crio.io": "disable",
+                    "cpu-quota.crio.io": "disable",
+                    "irq-load-balancing.crio.io": "disable",
+                    "k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.131.0.130/23\"],\"mac_address\":\"0a:58:0a:83:00:82\",\"gateway_ips\":[\"10.131.0.1\"],\"routes\":[{\"dest\":\"10.128.0.0/14\",\"nextHop\":\"10.131.0.1\"},{\"dest\":\"172.30.0.0/16\",\"nextHop\":\"10.131.0.1\"},{\"dest\":\"169.254.0.5/32\",\"nextHop\":\"10.131.0.1\"},{\"dest\":\"100.64.0.0/16\",\"nextHop\":\"10.131.0.1\"}],\"ip_address\":\"10.131.0.130/23\",\"gateway_ip\":\"10.131.0.1\",\"role\":\"primary\"}}",
+                    "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"ovn-kubernetes\",\n    \"interface\": \"eth0\",\n    \"ips\": [\n        \"10.131.0.130\"\n    ],\n    \"mac\": \"0a:58:0a:83:00:82\",\n    \"default\": true,\n    \"dns\": {}\n},{\n    \"name\": \"dpdk/ngc809-tenant-75\",\n    \"interface\": \"net1\",\n    \"ips\": [\n        \"10.0.1.5\"\n    ],\n    \"mac\": \"50:00:00:00:00:01\",\n    \"mtu\": 1500,\n    \"dns\": {},\n    \"device-info\": {\n        \"type\": \"pci\",\n        \"version\": \"1.1.0\",\n        \"pci\": {\n            \"pci-address\": \"0000:12:00.3\",\n            \"rdma-device\": \"mlx5_2\"\n        }\n    }\n}]",
+                    "k8s.v1.cni.cncf.io/networks": "[{\n  \"name\": \"ngc809-tenant-75\",\n  \"namespace\": \"dpdk\",\n  \"mac\": \"50:00:00:00:00:01\"\n}]\n",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{\"cpu-load-balancing.crio.io\":\"disable\",\"cpu-quota.crio.io\":\"disable\",\"irq-load-balancing.crio.io\":\"disable\",\"k8s.v1.cni.cncf.io/networks\":\"[{\\n  \\\"name\\\": \\\"ngc809-tenant-75\\\",\\n  \\\"namespace\\\": \\\"dpdk\\\",\\n  \\\"mac\\\": \\\"50:00:00:00:00:01\\\"\\n}]\\n\"},\"labels\":{\"app\":\"trex\"},\"name\":\"trex\",\"namespace\":\"dpdk\"},\"spec\":{\"affinity\":{\"podAntiAffinity\":{\"preferredDuringSchedulingIgnoredDuringExecution\":[{\"podAffinityTerm\":{\"labelSelector\":{\"matchExpressions\":[{\"key\":\"app\",\"operator\":\"In\",\"values\":[\"dpdk\"]}]},\"topologyKey\":\"kubernetes.io/hostname\"},\"weight\":100}]}},\"containers\":[{\"command\":[\"/bin/bash\",\"-c\",\"sleep infinity\"],\"envFrom\":[{\"configMapRef\":{\"name\":\"trex-info-for-config\"}}],\"image\":\"quay.io/midu/trex:2.87-ofed5.8\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"trex\",\"resources\":{\"limits\":{\"cpu\":\"4\",\"hugepages-1Gi\":\"2Gi\",\"memory\":\"1Gi\",\"openshift.io/ngc809_nic2_vf1\":\"1\"},\"requests\":{\"cpu\":\"4\",\"hugepages-1Gi\":\"2Gi\",\"memory\":\"1Gi\",\"openshift.io/ngc809_nic2_vf1\":\"1\"}},\"securityContext\":{\"capabilities\":{\"add\":[\"IPC_LOCK\",\"SYS_RESOURCE\",\"NET_RAW\",\"NET_ADMIN\"]},\"privileged\":true,\"runAsUser\":0},\"volumeMounts\":[{\"mountPath\":\"/opt/templates/\",\"name\":\"trex-config-template\"},{\"mountPath\":\"/opt/tests/\",\"name\":\"trex-tests\"},{\"mountPath\":\"/mnt/huge\",\"name\":\"hugepages\"},{\"mountPath\":\"/lib/modules\",\"name\":\"modules\",\"readOnly\":true},{\"mountPath\":\"/dev/infiniband\",\"name\":\"infiniband\"}]}],\"nodeName\":\"appworker-1.cwl.integration.core.bos2.lab\",\"nodeSelector\":{\"node-role.kubernetes.io/appworker-mcp-a\":\"\"},\"restartPolicy\":\"Always\",\"runtimeClassName\":\"performance-pao-worker-profile-appworker-mcp-a\",\"serviceAccountName\":\"default\",\"terminationGracePeriodSeconds\":5,\"volumes\":[{\"configMap\":{\"defaultMode\":420,\"name\":\"trex-config-template\"},\"name\":\"trex-config-template\"},{\"configMap\":{\"defaultMode\":420,\"name\":\"trex-tests\"},\"name\":\"trex-tests\"},{\"emptyDir\":{\"medium\":\"HugePages\"},\"name\":\"hugepages\"},{\"hostPath\":{\"path\":\"/lib/modules\",\"type\":\"\"},\"name\":\"modules\"},{\"hostPath\":{\"path\":\"/dev/infiniband\",\"type\":\"\"},\"name\":\"infiniband\"}]}}\n",
+                    "openshift.io/scc": "privileged",
+                    "security.openshift.io/validated-scc-subject-type": "user"
+                },
+                "creationTimestamp": "2026-11-11T12:54:46Z",
+                "generation": 1,
+                "labels": {
+                    "app": "trex"
+                },
+                "name": "trex",
+                "namespace": "dpdk",
+                "resourceVersion": "4631742",
+                "uid": "2fa47545-5eb3-4b79-93ff-f6a9390a3f02"
+            },
+            "spec": {
+                "affinity": {
+                    "podAntiAffinity": {
+                        "preferredDuringSchedulingIgnoredDuringExecution": [
+                            {
+                                "podAffinityTerm": {
+                                    "labelSelector": {
+                                        "matchExpressions": [
+                                            {
+                                                "key": "app",
+                                                "operator": "In",
+                                                "values": [
+                                                    "dpdk"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "topologyKey": "kubernetes.io/hostname"
+                                },
+                                "weight": 100
+                            }
+                        ]
+                    }
+                },
+                "containers": [
+                    {
+                        "command": [
+                            "/bin/bash",
+                            "-c",
+                            "sleep infinity"
+                        ],
+                        "env": [
+                            {
+                                "name": "CONTAINER_NAME",
+                                "value": "trex"
+                            }
+                        ],
+                        "envFrom": [
+                            {
+                                "configMapRef": {
+                                    "name": "trex-info-for-config"
+                                }
+                            }
+                        ],
+                        "image": "quay.io/midu/trex:2.87-ofed5.8",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "trex",
+                        "resources": {
+                            "limits": {
+                                "cpu": "4",
+                                "hugepages-1Gi": "2Gi",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_nic2_vf1": "1"
+                            },
+                            "requests": {
+                                "cpu": "4",
+                                "hugepages-1Gi": "2Gi",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_nic2_vf1": "1"
+                            }
+                        },
+                        "securityContext": {
+                            "capabilities": {
+                                "add": [
+                                    "IPC_LOCK",
+                                    "SYS_RESOURCE",
+                                    "NET_RAW",
+                                    "NET_ADMIN"
+                                ]
+                            },
+                            "privileged": true,
+                            "runAsUser": 0
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/opt/templates/",
+                                "name": "trex-config-template"
+                            },
+                            {
+                                "mountPath": "/opt/tests/",
+                                "name": "trex-tests"
+                            },
+                            {
+                                "mountPath": "/mnt/huge",
+                                "name": "hugepages"
+                            },
+                            {
+                                "mountPath": "/lib/modules",
+                                "name": "modules",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/dev/infiniband",
+                                "name": "infiniband"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-2txlm",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "appworker-1.cwl.integration.core.bos2.lab",
+                "nodeSelector": {
+                    "node-role.kubernetes.io/appworker-mcp-a": ""
+                },
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "runtimeClassName": "performance-pao-worker-profile-appworker-mcp-a",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 5,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/memory-pressure",
+                        "operator": "Exists"
+                    }
+                ],
+                "volumes": [
+                    {
+                        "configMap": {
+                            "defaultMode": 420,
+                            "name": "trex-config-template"
+                        },
+                        "name": "trex-config-template"
+                    },
+                    {
+                        "configMap": {
+                            "defaultMode": 420,
+                            "name": "trex-tests"
+                        },
+                        "name": "trex-tests"
+                    },
+                    {
+                        "emptyDir": {
+                            "medium": "HugePages"
+                        },
+                        "name": "hugepages"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/lib/modules",
+                            "type": ""
+                        },
+                        "name": "modules"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/dev/infiniband",
+                            "type": ""
+                        },
+                        "name": "infiniband"
+                    },
+                    {
+                        "name": "kube-api-access-2txlm",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "service-ca.crt",
+                                                "path": "service-ca.crt"
+                                            }
+                                        ],
+                                        "name": "openshift-service-ca.crt"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "downwardAPI": {
+                            "defaultMode": 420,
+                            "items": [
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.labels"
+                                    },
+                                    "path": "labels"
+                                },
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.annotations"
+                                    },
+                                    "path": "annotations"
+                                },
+                                {
+                                    "path": "hugepages_1G_request_trex",
+                                    "resourceFieldRef": {
+                                        "containerName": "trex",
+                                        "divisor": "1Mi",
+                                        "resource": "requests.hugepages-1Gi"
+                                    }
+                                },
+                                {
+                                    "path": "hugepages_1G_limit_trex",
+                                    "resourceFieldRef": {
+                                        "containerName": "trex",
+                                        "divisor": "1Mi",
+                                        "resource": "limits.hugepages-1Gi"
+                                    }
+                                }
+                            ]
+                        },
+                        "name": "podnetinfo"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:48Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:46Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:48Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:48Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:46Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "4",
+                            "hugepages-1Gi": "2Gi",
+                            "memory": "1Gi",
+                            "openshift.io/ngc809_nic2_vf1": "1"
+                        },
+                        "containerID": "cri-o://c9d04510acb18752be44bb78390124cd2e5d2e0d5ad3a49d6543690b7dd874bb",
+                        "image": "quay.io/midu/trex:2.87-ofed5.8",
+                        "imageID": "quay.io/midu/trex@sha256:55be01f28a8d4c4bc01512c74d067d8ee7b70e97574aa4077fe764b2fbac842e",
+                        "lastState": {},
+                        "name": "trex",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "4",
+                                "hugepages-1Gi": "2Gi",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_nic2_vf1": "1"
+                            },
+                            "requests": {
+                                "cpu": "4",
+                                "hugepages-1Gi": "2Gi",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_nic2_vf1": "1"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-11T12:54:48Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/opt/templates/",
+                                "name": "trex-config-template"
+                            },
+                            {
+                                "mountPath": "/opt/tests/",
+                                "name": "trex-tests"
+                            },
+                            {
+                                "mountPath": "/mnt/huge",
+                                "name": "hugepages"
+                            },
+                            {
+                                "mountPath": "/lib/modules",
+                                "name": "modules",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/dev/infiniband",
+                                "name": "infiniband"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-2txlm",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "192.168.121.19",
+                "hostIPs": [
+                    {
+                        "ip": "192.168.121.19"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.131.0.130",
+                "podIPs": [
+                    {
+                        "ip": "10.131.0.130"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-11-11T12:54:46Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.128.1.112/23\"],\"mac_address\":\"0a:58:0a:80:01:70\",\"gateway_ips\":[\"10.128.0.1\"],\"routes\":[{\"dest\":\"10.128.0.0/14\",\"nextHop\":\"10.128.0.1\"},{\"dest\":\"172.30.0.0/16\",\"nextHop\":\"10.128.0.1\"},{\"dest\":\"169.254.0.5/32\",\"nextHop\":\"10.128.0.1\"},{\"dest\":\"100.64.0.0/16\",\"nextHop\":\"10.128.0.1\"}],\"ip_address\":\"10.128.1.112/23\",\"gateway_ip\":\"10.128.0.1\",\"role\":\"primary\"}}",
+                    "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"ovn-kubernetes\",\n    \"interface\": \"eth0\",\n    \"ips\": [\n        \"10.128.1.112\"\n    ],\n    \"mac\": \"0a:58:0a:80:01:70\",\n    \"default\": true,\n    \"dns\": {}\n},{\n    \"name\": \"dpdk/ngc809-master0-sink\",\n    \"interface\": \"net1\",\n    \"ips\": [\n        \"10.0.2.5\"\n    ],\n    \"mac\": \"60:00:00:00:00:01\",\n    \"mtu\": 1500,\n    \"dns\": {},\n    \"device-info\": {\n        \"type\": \"pci\",\n        \"version\": \"1.1.0\",\n        \"pci\": {\n            \"pci-address\": \"0000:12:00.3\",\n            \"rdma-device\": \"mlx5_3\"\n        }\n    }\n}]",
+                    "k8s.v1.cni.cncf.io/networks": "[{\n  \"name\": \"ngc809-master0-sink\",\n  \"namespace\": \"dpdk\",\n  \"mac\": \"60:00:00:00:00:01\"\n}]\n",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{\"k8s.v1.cni.cncf.io/networks\":\"[{\\n  \\\"name\\\": \\\"ngc809-master0-sink\\\",\\n  \\\"namespace\\\": \\\"dpdk\\\",\\n  \\\"mac\\\": \\\"60:00:00:00:00:01\\\"\\n}]\\n\"},\"labels\":{\"app\":\"dpdk\"},\"name\":\"testpmd\",\"namespace\":\"dpdk\"},\"spec\":{\"containers\":[{\"command\":[\"/bin/bash\",\"-c\",\"sleep infinity\"],\"image\":\"quayregistry-quay-quay-enterprise.apps.hubcluster-hp.integration.core.bos2.lab/quayadmin/nrho-26.8/rhel9/testpmd:25.11-mlx5\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"testpmd\",\"resources\":{\"limits\":{\"cpu\":\"2\",\"memory\":\"1Gi\",\"openshift.io/ngc809_srv_nic2_vf\":\"1\"},\"requests\":{\"cpu\":\"2\",\"memory\":\"1Gi\",\"openshift.io/ngc809_srv_nic2_vf\":\"1\"}},\"securityContext\":{\"capabilities\":{\"add\":[\"IPC_LOCK\",\"SYS_RESOURCE\",\"NET_RAW\",\"NET_ADMIN\"]},\"privileged\":true,\"runAsUser\":0},\"terminationMessagePath\":\"/dev/termination-log\",\"terminationMessagePolicy\":\"File\",\"volumeMounts\":[{\"mountPath\":\"/lib/modules\",\"name\":\"modules\",\"readOnly\":true},{\"mountPath\":\"/dev/infiniband\",\"name\":\"infiniband\"}]}],\"dnsPolicy\":\"ClusterFirst\",\"enableServiceLinks\":true,\"nodeName\":\"master-0.cwl.integration.core.bos2.lab\",\"preemptionPolicy\":\"PreemptLowerPriority\",\"priority\":0,\"restartPolicy\":\"Always\",\"schedulerName\":\"default-scheduler\",\"securityContext\":{},\"serviceAccountName\":\"default\",\"terminationGracePeriodSeconds\":5,\"tolerations\":[{\"effect\":\"NoSchedule\",\"key\":\"node-role.kubernetes.io/master\",\"operator\":\"Exists\"},{\"effect\":\"NoSchedule\",\"key\":\"node-role.kubernetes.io/control-plane\",\"operator\":\"Exists\"},{\"effect\":\"NoExecute\",\"key\":\"node.kubernetes.io/not-ready\",\"operator\":\"Exists\",\"tolerationSeconds\":300},{\"effect\":\"NoExecute\",\"key\":\"node.kubernetes.io/unreachable\",\"operator\":\"Exists\",\"tolerationSeconds\":300},{\"effect\":\"NoSchedule\",\"key\":\"node.kubernetes.io/memory-pressure\",\"operator\":\"Exists\"}],\"volumes\":[{\"hostPath\":{\"path\":\"/lib/modules\",\"type\":\"\"},\"name\":\"modules\"},{\"hostPath\":{\"path\":\"/dev/infiniband\",\"type\":\"\"},\"name\":\"infiniband\"}]}}\n",
+                    "openshift.io/scc": "privileged",
+                    "security.openshift.io/validated-scc-subject-type": "user"
+                },
+                "creationTimestamp": "2026-11-11T12:54:56Z",
+                "generation": 1,
+                "labels": {
+                    "app": "dpdk"
+                },
+                "name": "testpmd",
+                "namespace": "dpdk",
+                "resourceVersion": "4631829",
+                "uid": "341d70c1-d5cb-4403-8358-0efc11c33cb2"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "command": [
+                            "/bin/bash",
+                            "-c",
+                            "sleep infinity"
+                        ],
+                        "image": "quayregistry-quay-quay-enterprise.apps.hubcluster-hp.integration.core.bos2.lab/quayadmin/nrho-26.8/rhel9/testpmd:25.11-mlx5",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "testpmd",
+                        "resources": {
+                            "limits": {
+                                "cpu": "2",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_srv_nic2_vf": "1"
+                            },
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_srv_nic2_vf": "1"
+                            }
+                        },
+                        "securityContext": {
+                            "capabilities": {
+                                "add": [
+                                    "IPC_LOCK",
+                                    "SYS_RESOURCE",
+                                    "NET_RAW",
+                                    "NET_ADMIN"
+                                ]
+                            },
+                            "privileged": true,
+                            "runAsUser": 0
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/lib/modules",
+                                "name": "modules",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/dev/infiniband",
+                                "name": "infiniband"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-bdvfk",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "master-0.cwl.integration.core.bos2.lab",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 5,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node-role.kubernetes.io/master",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node-role.kubernetes.io/control-plane",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/memory-pressure",
+                        "operator": "Exists"
+                    }
+                ],
+                "volumes": [
+                    {
+                        "hostPath": {
+                            "path": "/lib/modules",
+                            "type": ""
+                        },
+                        "name": "modules"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/dev/infiniband",
+                            "type": ""
+                        },
+                        "name": "infiniband"
+                    },
+                    {
+                        "name": "kube-api-access-bdvfk",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "service-ca.crt",
+                                                "path": "service-ca.crt"
+                                            }
+                                        ],
+                                        "name": "openshift-service-ca.crt"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "downwardAPI": {
+                            "defaultMode": 420,
+                            "items": [
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.labels"
+                                    },
+                                    "path": "labels"
+                                },
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.annotations"
+                                    },
+                                    "path": "annotations"
+                                }
+                            ]
+                        },
+                        "name": "podnetinfo"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:56Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:54:56Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "2",
+                            "memory": "1Gi",
+                            "openshift.io/ngc809_srv_nic2_vf": "1"
+                        },
+                        "containerID": "cri-o://13a9d26c913d7872eb271f1ca4ebd4d18ecaaee8214beb797e3bd1910130921c",
+                        "image": "quayregistry-quay-quay-enterprise.apps.hubcluster-hp.integration.core.bos2.lab/quayadmin/nrho-26.8/rhel9/testpmd:25.11-mlx5",
+                        "imageID": "quayregistry-quay-quay-enterprise.apps.hubcluster-hp.integration.core.bos2.lab/quayadmin/nrho-26.8/rhel9/testpmd@sha256:d6a3adf3b82a56e951509641113f44f7b9ccd910c1ead10f3c8d290ba8b0ef8c",
+                        "lastState": {},
+                        "name": "testpmd",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "2",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_srv_nic2_vf": "1"
+                            },
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "1Gi",
+                                "openshift.io/ngc809_srv_nic2_vf": "1"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-11T12:54:57Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/lib/modules",
+                                "name": "modules",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/dev/infiniband",
+                                "name": "infiniband"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-bdvfk",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "192.168.121.15",
+                "hostIPs": [
+                    {
+                        "ip": "192.168.121.15"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.128.1.112",
+                "podIPs": [
+                    {
+                        "ip": "10.128.1.112"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-11-11T12:54:56Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.128.1.103/23\"],\"mac_address\":\"0a:58:0a:80:01:67\",\"gateway_ips\":[\"10.128.0.1\"],\"routes\":[{\"dest\":\"10.128.0.0/14\",\"nextHop\":\"10.128.0.1\"},{\"dest\":\"172.30.0.0/16\",\"nextHop\":\"10.128.0.1\"},{\"dest\":\"169.254.0.5/32\",\"nextHop\":\"10.128.0.1\"},{\"dest\":\"100.64.0.0/16\",\"nextHop\":\"10.128.0.1\"}],\"ip_address\":\"10.128.1.103/23\",\"gateway_ip\":\"10.128.0.1\",\"role\":\"primary\"}}",
+                    "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"ovn-kubernetes\",\n    \"interface\": \"eth0\",\n    \"ips\": [\n        \"10.128.1.103\"\n    ],\n    \"mac\": \"0a:58:0a:80:01:67\",\n    \"default\": true,\n    \"dns\": {}\n},{\n    \"name\": \"dpdk/ngc809-vf0-25-m0\",\n    \"interface\": \"net1\",\n    \"ips\": [\n        \"10.10.30.1\"\n    ],\n    \"mac\": \"3a:cb:de:3a:9d:33\",\n    \"mtu\": 1500,\n    \"dns\": {},\n    \"device-info\": {\n        \"type\": \"pci\",\n        \"version\": \"1.1.0\",\n        \"pci\": {\n            \"pci-address\": \"0000:12:00.2\"\n        }\n    }\n}]",
+                    "k8s.v1.cni.cncf.io/networks": "[{\"name\": \"ngc809-vf0-25-m0\", \"namespace\": \"dpdk\"}]",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{\"k8s.v1.cni.cncf.io/networks\":\"[{\\\"name\\\": \\\"ngc809-vf0-25-m0\\\", \\\"namespace\\\": \\\"dpdk\\\"}]\"},\"labels\":{\"app\":\"iperf3\"},\"name\":\"iperf3-server\",\"namespace\":\"dpdk\"},\"spec\":{\"containers\":[{\"command\":[\"iperf3\",\"-s\",\"-B\",\"10.10.30.1\"],\"image\":\"quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c\",\"name\":\"iperf3\",\"resources\":{\"limits\":{\"openshift.io/ngc809_m0_vf0\":\"1\"},\"requests\":{\"cpu\":\"2\",\"memory\":\"512Mi\",\"openshift.io/ngc809_m0_vf0\":\"1\"}}}],\"nodeName\":\"master-0.cwl.integration.core.bos2.lab\",\"terminationGracePeriodSeconds\":5,\"tolerations\":[{\"effect\":\"NoSchedule\",\"key\":\"node-role.kubernetes.io/master\",\"operator\":\"Exists\"},{\"effect\":\"NoSchedule\",\"key\":\"node-role.kubernetes.io/control-plane\",\"operator\":\"Exists\"}]}}\n",
+                    "openshift.io/scc": "anyuid",
+                    "security.openshift.io/validated-scc-subject-type": "user"
+                },
+                "creationTimestamp": "2026-11-11T12:32:50Z",
+                "generation": 1,
+                "labels": {
+                    "app": "iperf3"
+                },
+                "name": "iperf3-server",
+                "namespace": "dpdk",
+                "resourceVersion": "4619476",
+                "uid": "a2204b0b-d8c2-42de-9706-4f0ed2fd2550"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "command": [
+                            "iperf3",
+                            "-s",
+                            "-B",
+                            "10.10.30.1"
+                        ],
+                        "image": "quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "iperf3",
+                        "resources": {
+                            "limits": {
+                                "openshift.io/ngc809_m0_vf0": "1"
+                            },
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "512Mi",
+                                "openshift.io/ngc809_m0_vf0": "1"
+                            }
+                        },
+                        "securityContext": {
+                            "capabilities": {
+                                "drop": [
+                                    "MKNOD"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-csxnn",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "master-0.cwl.integration.core.bos2.lab",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "seLinuxOptions": {
+                        "level": "s0:c29,c19"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 5,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node-role.kubernetes.io/master",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node-role.kubernetes.io/control-plane",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/memory-pressure",
+                        "operator": "Exists"
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "kube-api-access-csxnn",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "service-ca.crt",
+                                                "path": "service-ca.crt"
+                                            }
+                                        ],
+                                        "name": "openshift-service-ca.crt"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "downwardAPI": {
+                            "defaultMode": 420,
+                            "items": [
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.labels"
+                                    },
+                                    "path": "labels"
+                                },
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.annotations"
+                                    },
+                                    "path": "annotations"
+                                }
+                            ]
+                        },
+                        "name": "podnetinfo"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:50Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:50Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "2",
+                            "memory": "512Mi",
+                            "openshift.io/ngc809_m0_vf0": "1"
+                        },
+                        "containerID": "cri-o://0ef7e57b02ada9e1eedd77e2116af86cc61c1ef390931d0b24870f232b9a50be",
+                        "image": "quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c",
+                        "imageID": "quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c",
+                        "lastState": {},
+                        "name": "iperf3",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "openshift.io/ngc809_m0_vf0": "1"
+                            },
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "512Mi",
+                                "openshift.io/ngc809_m0_vf0": "1"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-11T12:32:57Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-csxnn",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "192.168.121.15",
+                "hostIPs": [
+                    {
+                        "ip": "192.168.121.15"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.128.1.103",
+                "podIPs": [
+                    {
+                        "ip": "10.128.1.103"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2026-11-11T12:32:50Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "k8s.ovn.org/pod-networks": "{\"default\":{\"ip_addresses\":[\"10.131.0.127/23\"],\"mac_address\":\"0a:58:0a:83:00:7f\",\"gateway_ips\":[\"10.131.0.1\"],\"routes\":[{\"dest\":\"10.128.0.0/14\",\"nextHop\":\"10.131.0.1\"},{\"dest\":\"172.30.0.0/16\",\"nextHop\":\"10.131.0.1\"},{\"dest\":\"169.254.0.5/32\",\"nextHop\":\"10.131.0.1\"},{\"dest\":\"100.64.0.0/16\",\"nextHop\":\"10.131.0.1\"}],\"ip_address\":\"10.131.0.127/23\",\"gateway_ip\":\"10.131.0.1\",\"role\":\"primary\"}}",
+                    "k8s.v1.cni.cncf.io/network-status": "[{\n    \"name\": \"ovn-kubernetes\",\n    \"interface\": \"eth0\",\n    \"ips\": [\n        \"10.131.0.127\"\n    ],\n    \"mac\": \"0a:58:0a:83:00:7f\",\n    \"default\": true,\n    \"dns\": {}\n},{\n    \"name\": \"dpdk/ngc809-vf0-25-aw1\",\n    \"interface\": \"net1\",\n    \"ips\": [\n        \"10.10.30.2\"\n    ],\n    \"mac\": \"3e:23:b8:c1:39:35\",\n    \"mtu\": 1500,\n    \"dns\": {},\n    \"device-info\": {\n        \"type\": \"pci\",\n        \"version\": \"1.1.0\",\n        \"pci\": {\n            \"pci-address\": \"0000:12:00.2\"\n        }\n    }\n}]",
+                    "k8s.v1.cni.cncf.io/networks": "[{\"name\": \"ngc809-vf0-25-aw1\", \"namespace\": \"dpdk\"}]",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{\"k8s.v1.cni.cncf.io/networks\":\"[{\\\"name\\\": \\\"ngc809-vf0-25-aw1\\\", \\\"namespace\\\": \\\"dpdk\\\"}]\"},\"labels\":{\"app\":\"iperf3\"},\"name\":\"iperf3-client\",\"namespace\":\"dpdk\"},\"spec\":{\"containers\":[{\"command\":[\"sleep\",\"infinity\"],\"image\":\"quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c\",\"name\":\"iperf3\",\"resources\":{\"limits\":{\"openshift.io/ngc809_aw1_vf0\":\"1\"},\"requests\":{\"cpu\":\"2\",\"memory\":\"512Mi\",\"openshift.io/ngc809_aw1_vf0\":\"1\"}}}],\"nodeName\":\"appworker-1.cwl.integration.core.bos2.lab\",\"terminationGracePeriodSeconds\":5}}\n",
+                    "openshift.io/scc": "anyuid",
+                    "security.openshift.io/validated-scc-subject-type": "user"
+                },
+                "creationTimestamp": "2026-11-11T12:32:50Z",
+                "generation": 1,
+                "labels": {
+                    "app": "iperf3"
+                },
+                "name": "iperf3-client",
+                "namespace": "dpdk",
+                "resourceVersion": "4619470",
+                "uid": "4f9f09e1-d269-4687-941d-c96ab4ad4db3"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "command": [
+                            "sleep",
+                            "infinity"
+                        ],
+                        "image": "quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "iperf3",
+                        "resources": {
+                            "limits": {
+                                "openshift.io/ngc809_aw1_vf0": "1"
+                            },
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "512Mi",
+                                "openshift.io/ngc809_aw1_vf0": "1"
+                            }
+                        },
+                        "securityContext": {
+                            "capabilities": {
+                                "drop": [
+                                    "MKNOD"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-tp9j8",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "appworker-1.cwl.integration.core.bos2.lab",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "seLinuxOptions": {
+                        "level": "s0:c29,c19"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 5,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/memory-pressure",
+                        "operator": "Exists"
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "kube-api-access-tp9j8",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "service-ca.crt",
+                                                "path": "service-ca.crt"
+                                            }
+                                        ],
+                                        "name": "openshift-service-ca.crt"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "downwardAPI": {
+                            "defaultMode": 420,
+                            "items": [
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.labels"
+                                    },
+                                    "path": "labels"
+                                },
+                                {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.annotations"
+                                    },
+                                    "path": "annotations"
+                                }
+                            ]
+                        },
+                        "name": "podnetinfo"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:50Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:58Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-11T12:32:50Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "2",
+                            "memory": "512Mi",
+                            "openshift.io/ngc809_aw1_vf0": "1"
+                        },
+                        "containerID": "cri-o://fe8e3036a3e820f59080e9d30d945b262510efc5cf78eac2fe8036e12b4e7b53",
+                        "image": "quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c",
+                        "imageID": "quay.io/midu/iperf3@sha256:6e84f0fd7a321ac3edc12607b0d613a3adf73ca726df33900ae78b82224cb05c",
+                        "lastState": {},
+                        "name": "iperf3",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "openshift.io/ngc809_aw1_vf0": "1"
+                            },
+                            "requests": {
+                                "cpu": "2",
+                                "memory": "512Mi",
+                                "openshift.io/ngc809_aw1_vf0": "1"
+                            }
+                        },
+                        "restartCount": 0,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-11T12:32:57Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-tp9j8",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/etc/podnetinfo",
+                                "name": "podnetinfo",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "192.168.121.19",
+                "hostIPs": [
+                    {
+                        "ip": "192.168.121.19"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.131.0.127",
+                "podIPs": [
+                    {
+                        "ip": "10.131.0.127"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2026-11-11T12:32:50Z"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

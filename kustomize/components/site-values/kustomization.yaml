@@ -1,0 +1,183 @@
+---
+# Wires every field of the overlay's SiteValues object (site-values.yaml) into the
+# reference CRs. Each replacement: source = one SiteValues field, targets = every
+# place that value lives. Values embedded in strings (Multus/IPAM JSON, the PF in
+# pfNames, MACs in the TRex .py files) use delimiter + index.
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+replacements:
+  # ---------------------------------------------------------------- namespace
+  - source: {kind: SiteValues, fieldPath: spec.namespace}
+    targets:
+      - select: {kind: Namespace}
+        fieldPaths: [metadata.name]
+      - select: {kind: ConfigMap}
+        fieldPaths: [metadata.namespace]
+      - select: {kind: Pod}
+        fieldPaths: [metadata.namespace]
+      - select: {kind: SriovNetwork}
+        fieldPaths:
+          - spec.networkNamespace
+          - metadata.annotations.[operator.sriovnetwork.openshift.io/last-network-namespace]
+      # "namespace" inside the Multus annotation JSON: 8th "-delimited token
+      - select: {kind: Pod}
+        fieldPaths: ["metadata.annotations.[k8s.v1.cni.cncf.io/networks]"]
+        options: {delimiter: '"', index: 7}
+
+  # ---------------------------------------------------------------- nodes
+  - source: {kind: SiteValues, fieldPath: spec.server.hostname}
+    targets:
+      - select: {kind: NodeNetworkConfigurationPolicy, name: ngc809-master0-nic2-vf-partition}
+        fieldPaths: ["spec.nodeSelector.[kubernetes.io/hostname]"]
+      - select: {kind: SriovNetworkNodePolicy, name: ngc809-master0-nic2-vf}
+        fieldPaths: ["spec.nodeSelector.[kubernetes.io/hostname]"]
+      - select: {kind: SriovNetworkNodePolicy, name: ngc809-m0-vf0-iperf}
+        fieldPaths: ["spec.nodeSelector.[kubernetes.io/hostname]"]
+      - select: {kind: Pod, name: testpmd}
+        fieldPaths: [spec.nodeName]
+      - select: {kind: Pod, name: iperf3-server}
+        fieldPaths: [spec.nodeName]
+  - source: {kind: SiteValues, fieldPath: spec.client.hostname}
+    targets:
+      - select: {kind: NodeNetworkConfigurationPolicy, name: ngc809-nic2-vf-partition}
+        fieldPaths: ["spec.nodeSelector.[kubernetes.io/hostname]"]
+      - select: {kind: SriovNetworkNodePolicy, name: ngc809-nic2-vf1-tenant}
+        fieldPaths: ["spec.nodeSelector.[kubernetes.io/hostname]"]
+      - select: {kind: SriovNetworkNodePolicy, name: ngc809-aw1-vf0-iperf}
+        fieldPaths: ["spec.nodeSelector.[kubernetes.io/hostname]"]
+      - select: {kind: Pod, name: trex}
+        fieldPaths: [spec.nodeName]
+      - select: {kind: Pod, name: iperf3-client}
+        fieldPaths: [spec.nodeName]
+  - source: {kind: SiteValues, fieldPath: spec.client.runtimeClassName}
+    targets:
+      - select: {kind: Pod, name: trex}
+        fieldPaths: [spec.runtimeClassName]
+  - source: {kind: SiteValues, fieldPath: spec.client.nodeSelector}
+    targets:
+      - select: {kind: Pod, name: trex}
+        fieldPaths: [spec.nodeSelector]
+
+  # ---------------------------------------------------------------- NIC / PF
+  - source: {kind: SiteValues, fieldPath: spec.nic.pfName}
+    targets:
+      - select: {kind: NodeNetworkConfigurationPolicy}
+        fieldPaths: [spec.desiredState.interfaces.0.name]
+      - select: {kind: SriovNetworkNodePolicy}
+        fieldPaths: [spec.nicSelector.pfNames.0]
+        options: {delimiter: '#', index: 0}
+  - source: {kind: SiteValues, fieldPath: spec.nic.vendorId}
+    targets:
+      - select: {kind: SriovNetworkNodePolicy}
+        fieldPaths: [spec.nicSelector.vendor]
+  - source: {kind: SiteValues, fieldPath: spec.nic.deviceId}
+    targets:
+      - select: {kind: SriovNetworkNodePolicy}
+        fieldPaths: [spec.nicSelector.deviceID]
+  - source: {kind: SiteValues, fieldPath: spec.nic.totalVfs}
+    targets:
+      - select: {kind: NodeNetworkConfigurationPolicy}
+        fieldPaths: [spec.desiredState.interfaces.0.ethernet.sr-iov.total-vfs]
+      - select: {kind: SriovNetworkNodePolicy}
+        fieldPaths: [spec.numVfs]
+  - source: {kind: SiteValues, fieldPath: spec.nic.portBandwidthGb}
+    targets:
+      - select: {kind: ConfigMap, name: trex-info-for-config}
+        fieldPaths: [data.PORT_BANDWIDTH_GB]
+  - source: {kind: SiteValues, fieldPath: spec.vlan}
+    targets:
+      - select: {kind: SriovNetwork}
+        fieldPaths: [spec.vlan]
+
+  # ---------------------------------------------------------------- VF0 (25 %, iperf3)
+  - source: {kind: SiteValues, fieldPath: spec.vf0.rateMbps}
+    targets:
+      - select: {kind: NodeNetworkConfigurationPolicy}
+        fieldPaths:
+          - spec.desiredState.interfaces.0.ethernet.sr-iov.vfs.0.max-tx-rate
+          - spec.desiredState.interfaces.0.ethernet.sr-iov.vfs.0.min-tx-rate
+      - select: {kind: SriovNetwork, name: ngc809-vf0-25-m0}
+        fieldPaths: [spec.maxTxRate, spec.minTxRate]
+      - select: {kind: SriovNetwork, name: ngc809-vf0-25-aw1}
+        fieldPaths: [spec.maxTxRate, spec.minTxRate]
+  - source: {kind: SiteValues, fieldPath: spec.vf0.serverAddress}
+    targets:
+      - select: {kind: SriovNetwork, name: ngc809-vf0-25-m0}
+        fieldPaths: [spec.ipam]
+        options: {delimiter: '"', index: 9}
+  - source: {kind: SiteValues, fieldPath: spec.vf0.serverAddress, options: {delimiter: /, index: 0}}
+    targets:
+      - select: {kind: Pod, name: iperf3-server}
+        fieldPaths: ["spec.containers.[name=iperf3].command.3"]
+  - source: {kind: SiteValues, fieldPath: spec.vf0.clientAddress}
+    targets:
+      - select: {kind: SriovNetwork, name: ngc809-vf0-25-aw1}
+        fieldPaths: [spec.ipam]
+        options: {delimiter: '"', index: 9}
+
+  # ---------------------------------------------------------------- VF1 (75 %, TRex -> testpmd)
+  - source: {kind: SiteValues, fieldPath: spec.vf1.rateMbps}
+    targets:
+      - select: {kind: NodeNetworkConfigurationPolicy}
+        fieldPaths:
+          - spec.desiredState.interfaces.0.ethernet.sr-iov.vfs.1.max-tx-rate
+          - spec.desiredState.interfaces.0.ethernet.sr-iov.vfs.1.min-tx-rate
+      - select: {kind: SriovNetwork, name: ngc809-master0-sink}
+        fieldPaths: [spec.maxTxRate, spec.minTxRate]
+      - select: {kind: SriovNetwork, name: ngc809-tenant-75}
+        fieldPaths: [spec.maxTxRate, spec.minTxRate]
+  - source: {kind: SiteValues, fieldPath: spec.vf1.serverSubnet}
+    targets:
+      - select: {kind: SriovNetwork, name: ngc809-master0-sink}
+        fieldPaths: [spec.ipam]
+        options: {delimiter: '"', index: 9}
+  - source: {kind: SiteValues, fieldPath: spec.vf1.clientSubnet}
+    targets:
+      - select: {kind: SriovNetwork, name: ngc809-tenant-75}
+        fieldPaths: [spec.ipam]
+        options: {delimiter: '"', index: 9}
+  - source: {kind: SiteValues, fieldPath: spec.vf1.trexMac}
+    targets:
+      - select: {kind: Pod, name: trex}
+        fieldPaths: ["metadata.annotations.[k8s.v1.cni.cncf.io/networks]"]
+        options: {delimiter: '"', index: 11}
+      - select: {kind: ConfigMap, name: trex-tests}
+        fieldPaths: [data.testpmd\.py]
+        options: {delimiter: "'", index: 1}
+  - source: {kind: SiteValues, fieldPath: spec.vf1.testpmdMac}
+    targets:
+      - select: {kind: Pod, name: testpmd}
+        fieldPaths: ["metadata.annotations.[k8s.v1.cni.cncf.io/networks]"]
+        options: {delimiter: '"', index: 11}
+      - select: {kind: ConfigMap, name: trex-tests}
+        fieldPaths: [data.testpmd_addr\.py]
+        options: {delimiter: "'", index: 1}
+
+  # ---------------------------------------------------------------- workloads
+  - source: {kind: SiteValues, fieldPath: spec.images.trex}
+    targets:
+      - select: {kind: Pod, name: trex}
+        fieldPaths: ["spec.containers.[name=trex].image"]
+  - source: {kind: SiteValues, fieldPath: spec.images.testpmd}
+    targets:
+      - select: {kind: Pod, name: testpmd}
+        fieldPaths: ["spec.containers.[name=testpmd].image"]
+  - source: {kind: SiteValues, fieldPath: spec.images.iperf3}
+    targets:
+      - select: {kind: Pod, name: iperf3-server}
+        fieldPaths: ["spec.containers.[name=iperf3].image"]
+      - select: {kind: Pod, name: iperf3-client}
+        fieldPaths: ["spec.containers.[name=iperf3].image"]
+  - source: {kind: SiteValues, fieldPath: spec.trex.cpus}
+    targets:
+      - select: {kind: Pod, name: trex}
+        fieldPaths:
+          - spec.containers.[name=trex].resources.requests.cpu
+          - spec.containers.[name=trex].resources.limits.cpu
+  - source: {kind: SiteValues, fieldPath: spec.trex.hugepages1Gi}
+    targets:
+      - select: {kind: Pod, name: trex}
+        fieldPaths:
+          - spec.containers.[name=trex].resources.requests.hugepages-1Gi
+          - spec.containers.[name=trex].resources.limits.hugepages-1Gi

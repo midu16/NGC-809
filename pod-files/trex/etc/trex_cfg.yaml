@@ -1,0 +1,17 @@
+- port_limit: 2
+  version: 2
+  interfaces:
+    - "0000:12:00.3"
+    - "dummy"
+  port_bandwidth_gb: 25
+  port_info:
+    - ip: 10.10.10.2
+      default_gw: 10.10.10.1
+    - ip: 10.10.20.2
+      default_gw: 10.10.20.1
+  platform:
+    master_thread_id: 3
+    latency_thread_id: 4
+    dual_if:
+      - socket: 0
+        threads: [67, 68]

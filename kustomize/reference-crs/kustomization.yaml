@@ -1,0 +1,32 @@
+---
+# NGC-809 reference CRs (base). Every site-specific value is a placeholder:
+#   - strings:  "<name>"
+#   - integers: 0 (so the rendered field stays an integer)
+# The values come from the overlay's site-values.yaml, through the replacements in
+# ../components/site-values. Do not edit values here; edit site-values.yaml in an overlay.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - 01-namespace.yaml
+  - 02-nncp-vf-partition.yaml
+  - 03-sriovnetworknodepolicies.yaml
+  - 04-sriovnetworks.yaml
+  - 05-configmaps-trex.yaml
+  - 06-pods-trex-testpmd.yaml
+  - 07-pods-iperf3.yaml
+
+# trex-config-template and trex-tests: the file bodies live in files/ (readable, diffable).
+configMapGenerator:
+  - name: trex-config-template
+    namespace: <namespace>
+    files:
+      - files/trex_cfg.yaml
+  - name: trex-tests
+    namespace: <namespace>
+    files:
+      - files/testpmd.py
+      - files/testpmd_addr.py
+
+generatorOptions:
+  disableNameSuffixHash: true  # pods mount these ConfigMaps by fixed name

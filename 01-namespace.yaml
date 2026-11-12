@@ -1,0 +1,12 @@
+# NGC-809 — exported live from CWL (OCP 4.22.3) on 2026-11-11 by ngc-809/tools/clean_export.py.
+# Namespace for all NGC-809 test pods.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dpdk
+  labels:
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/audit-version: latest
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/warn-version: latest

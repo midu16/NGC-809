@@ -1,0 +1,27 @@
+{
+    "apiVersion": "sriovnetwork.openshift.io/v1",
+    "kind": "SriovOperatorConfig",
+    "metadata": {
+        "creationTimestamp": "2026-11-03T16:31:00Z",
+        "finalizers": [
+            "operatorconfig.finalizers.sriovnetwork.openshift.io"
+        ],
+        "generation": 3,
+        "name": "default",
+        "namespace": "openshift-sriov-network-operator",
+        "resourceVersion": "1399651",
+        "uid": "1ac711da-0908-4fd5-9c62-cb770dc6e5e5"
+    },
+    "spec": {
+        "configDaemonNodeSelector": {
+            "feature.node.kubernetes.io/network-sriov.capable": "true"
+        },
+        "disableDrain": true,
+        "disablePlugins": [
+            "mellanox"
+        ],
+        "enableInjector": true,
+        "enableOperatorWebhook": true,
+        "logLevel": 0
+    }
+}

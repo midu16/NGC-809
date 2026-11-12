@@ -1,0 +1,17 @@
+# NGC-809 — exported live from CWL (OCP 4.22.3) on 2026-11-11 by ngc-809/tools/clean_export.py.
+# REFERENCE ONLY — cluster-wide operator config in effect during the tests (disableDrain: true).
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovOperatorConfig
+metadata:
+  name: default
+  namespace: openshift-sriov-network-operator
+spec:
+  configDaemonNodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: 'true'
+  disableDrain: true
+  disablePlugins:
+  - mellanox
+  enableInjector: true
+  enableOperatorWebhook: true
+  logLevel: 0

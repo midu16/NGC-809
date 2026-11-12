@@ -1,0 +1,56 @@
+# NMState: create the VFs on the PF of each node, trust/spoofchk and the 25 %/75 % rates.
+# Wait for NNCE Available before step 03.
+---
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: ngc809-master0-nic2-vf-partition
+spec:
+  desiredState:
+    interfaces:
+    - ethernet:
+        sr-iov:
+          total-vfs: 0       # spec.nic.totalVfs
+          vfs:
+          - id: 0
+            max-tx-rate: 0   # spec.vf0.rateMbps
+            min-tx-rate: 0   # spec.vf0.rateMbps
+            spoof-check: false
+            trust: true
+          - id: 1
+            max-tx-rate: 0   # spec.vf1.rateMbps
+            min-tx-rate: 0   # spec.vf1.rateMbps
+            spoof-check: false
+            trust: true
+      name: <pf-name>
+      state: up
+      type: ethernet
+  nodeSelector:
+    kubernetes.io/hostname: <server-hostname>
+---
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: ngc809-nic2-vf-partition
+spec:
+  desiredState:
+    interfaces:
+    - ethernet:
+        sr-iov:
+          total-vfs: 0       # spec.nic.totalVfs
+          vfs:
+          - id: 0
+            max-tx-rate: 0   # spec.vf0.rateMbps
+            min-tx-rate: 0   # spec.vf0.rateMbps
+            spoof-check: false
+            trust: true
+          - id: 1
+            max-tx-rate: 0   # spec.vf1.rateMbps
+            min-tx-rate: 0   # spec.vf1.rateMbps
+            spoof-check: false
+            trust: true
+      name: <pf-name>
+      state: up
+      type: ethernet
+  nodeSelector:
+    kubernetes.io/hostname: <client-hostname>

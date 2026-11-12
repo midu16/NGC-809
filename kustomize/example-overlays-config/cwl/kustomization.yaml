@@ -1,0 +1,13 @@
+---
+# NGC-809 on CWL. Edit site-values.yaml only.
+#   kubectl kustomize kustomize/example-overlays-config/cwl
+# Apply in stages (NNCP -> SNNP -> SriovNetwork -> pods), see tools/render.py / README.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../reference-crs/
+  - site-values.yaml
+
+components:
+  - ../../components/site-values/

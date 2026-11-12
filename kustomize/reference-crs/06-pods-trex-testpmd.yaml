@@ -1,0 +1,182 @@
+# VF1 (75 %) workloads: TRex (client node) and testpmd (server node). Pinned via nodeName.
+# After Ready, restore the in-pod files with tools/restore_pod_files.sh (pod-files/).
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: trex
+  namespace: <namespace>
+  labels:
+    app: trex
+  annotations:
+    cpu-load-balancing.crio.io: disable
+    cpu-quota.crio.io: disable
+    irq-load-balancing.crio.io: disable
+    k8s.v1.cni.cncf.io/networks: "[{\n  \"name\": \"ngc809-tenant-75\",\n  \"namespace\": \"<namespace>\",\n  \"mac\": \"<trex-mac>\"\
+      \n}]\n"
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - dpdk
+          topologyKey: kubernetes.io/hostname
+        weight: 100
+  containers:
+  - command:
+    - /bin/bash
+    - -c
+    - sleep infinity
+    envFrom:
+    - configMapRef:
+        name: trex-info-for-config
+    image: <trex-image>
+    imagePullPolicy: IfNotPresent
+    name: trex
+    resources:
+      limits:
+        cpu: <trex-cpus>
+        hugepages-1Gi: <trex-hugepages-1gi>
+        memory: 1Gi
+        openshift.io/ngc809_nic2_vf1: '1'
+      requests:
+        cpu: <trex-cpus>
+        hugepages-1Gi: <trex-hugepages-1gi>
+        memory: 1Gi
+        openshift.io/ngc809_nic2_vf1: '1'
+    securityContext:
+      capabilities:
+        add:
+        - IPC_LOCK
+        - SYS_RESOURCE
+        - NET_RAW
+        - NET_ADMIN
+      privileged: true
+      runAsUser: 0
+    volumeMounts:
+    - mountPath: /opt/templates/
+      name: trex-config-template
+    - mountPath: /opt/tests/
+      name: trex-tests
+    - mountPath: /mnt/huge
+      name: hugepages
+    - mountPath: /lib/modules
+      name: modules
+      readOnly: true
+    - mountPath: /dev/infiniband
+      name: infiniband
+  nodeName: <client-hostname>
+  nodeSelector:
+    <client-node-selector>: ''  # whole map replaced by spec.client.nodeSelector
+  restartPolicy: Always
+  runtimeClassName: <client-runtime-class>
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 5
+  volumes:
+  - configMap:
+      defaultMode: 420
+      name: trex-config-template
+    name: trex-config-template
+  - configMap:
+      defaultMode: 420
+      name: trex-tests
+    name: trex-tests
+  - emptyDir:
+      medium: HugePages
+    name: hugepages
+  - hostPath:
+      path: /lib/modules
+      type: ''
+    name: modules
+  - hostPath:
+      path: /dev/infiniband
+      type: ''
+    name: infiniband
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testpmd
+  namespace: <namespace>
+  labels:
+    app: dpdk
+  annotations:
+    k8s.v1.cni.cncf.io/networks: "[{\n  \"name\": \"ngc809-master0-sink\",\n  \"namespace\": \"<namespace>\",\n  \"mac\": \"<testpmd-mac>\"\
+      \n}]\n"
+spec:
+  containers:
+  - command:
+    - /bin/bash
+    - -c
+    - sleep infinity
+    image: <testpmd-image>
+    imagePullPolicy: IfNotPresent
+    name: testpmd
+    resources:
+      limits:
+        cpu: '2'
+        memory: 1Gi
+        openshift.io/ngc809_srv_nic2_vf: '1'
+      requests:
+        cpu: '2'
+        memory: 1Gi
+        openshift.io/ngc809_srv_nic2_vf: '1'
+    securityContext:
+      capabilities:
+        add:
+        - IPC_LOCK
+        - SYS_RESOURCE
+        - NET_RAW
+        - NET_ADMIN
+      privileged: true
+      runAsUser: 0
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /lib/modules
+      name: modules
+      readOnly: true
+    - mountPath: /dev/infiniband
+      name: infiniband
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: <server-hostname>
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 5
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+    operator: Exists
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/control-plane
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /lib/modules
+      type: ''
+    name: modules
+  - hostPath:
+      path: /dev/infiniband
+      type: ''
+    name: infiniband

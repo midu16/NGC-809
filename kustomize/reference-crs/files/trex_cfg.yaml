@@ -1,0 +1,14 @@
+- port_limit: 1
+  version: 2
+  interfaces:
+    - "${PCIDEVICE_OPENSHIFT_IO_NGC809_NIC2_VF1}"
+  port_bandwidth_gb: ${PORT_BANDWIDTH_GB}
+  port_info:
+    - ip: 10.10.10.2
+      default_gw: 10.10.10.1
+  platform:
+    master_thread_id: $MASTER
+    latency_thread_id: $LATENCY
+    dual_if:
+      - socket: ${SOCKET}
+        threads: [${CPU}]

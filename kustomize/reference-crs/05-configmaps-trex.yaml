@@ -1,0 +1,10 @@
+---
+# Port bandwidth for the TRex config template. trex-config-template and trex-tests are generated
+# from files/ by kustomization.yaml (configMapGenerator).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trex-info-for-config
+  namespace: <namespace>
+data:
+  PORT_BANDWIDTH_GB: <port-bandwidth-gb>

@@ -1,0 +1,387 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "sriovnetwork.openshift.io/v1",
+            "kind": "SriovNetworkNodeState",
+            "metadata": {
+                "annotations": {
+                    "sriovnetwork.openshift.io/current-state": "Idle",
+                    "sriovnetwork.openshift.io/desired-state": "Idle"
+                },
+                "creationTimestamp": "2026-11-05T18:01:52Z",
+                "generation": 6,
+                "name": "master-0.cwl.integration.core.bos2.lab",
+                "namespace": "openshift-sriov-network-operator",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "sriovnetwork.openshift.io/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "SriovOperatorConfig",
+                        "name": "default",
+                        "uid": "1ac711da-0908-4fd5-9c62-cb770dc6e5e5"
+                    }
+                ],
+                "resourceVersion": "4607424",
+                "uid": "a92d2a4e-bcbe-4aa1-acf8-31281771a1f3"
+            },
+            "spec": {
+                "bridges": {},
+                "interfaces": [
+                    {
+                        "externallyManaged": true,
+                        "name": "ens1f0np0",
+                        "numVfs": 2,
+                        "pciAddress": "0000:12:00.0",
+                        "vfGroups": [
+                            {
+                                "deviceType": "netdevice",
+                                "isRdma": true,
+                                "policyName": "ngc809-master0-nic2-vf",
+                                "resourceName": "ngc809_srv_nic2_vf",
+                                "vfRange": "1-1"
+                            },
+                            {
+                                "deviceType": "netdevice",
+                                "policyName": "ngc809-m0-vf0-iperf",
+                                "resourceName": "ngc809_m0_vf0",
+                                "vfRange": "0-0"
+                            }
+                        ]
+                    }
+                ],
+                "system": {}
+            },
+            "status": {
+                "interfaces": [
+                    {
+                        "Vfs": [
+                            {
+                                "deviceID": "101e",
+                                "driver": "mlx5_core",
+                                "guid": "33:9d:3a:fe:ff:de:cb:3a",
+                                "mac": "3a:cb:de:3a:9d:33",
+                                "mtu": 1500,
+                                "name": "ens1f0v0",
+                                "pciAddress": "0000:12:00.2",
+                                "vendor": "15b3",
+                                "vfID": 0
+                            },
+                            {
+                                "deviceID": "101e",
+                                "driver": "mlx5_core",
+                                "guid": "01:00:00:fe:ff:00:00:60",
+                                "mac": "60:00:00:00:00:01",
+                                "mtu": 1500,
+                                "name": "ens1f0v1",
+                                "pciAddress": "0000:12:00.3",
+                                "vendor": "15b3",
+                                "vfID": 1
+                            }
+                        ],
+                        "altNames": [
+                            "enp18s0f0np0"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "externallyManaged": true,
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fc:72",
+                        "mtu": 1500,
+                        "name": "ens1f0np0",
+                        "numVfs": 2,
+                        "pciAddress": "0000:12:00.0",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp18s0f1np1"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fc:73",
+                        "mtu": 1500,
+                        "name": "ens1f1np1",
+                        "pciAddress": "0000:12:00.1",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp58s0f0np0"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:2a:d6:12",
+                        "mtu": 9126,
+                        "name": "ens15f0np0",
+                        "pciAddress": "0000:3a:00.0",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp58s0f1np1"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:2a:d6:12",
+                        "mtu": 9126,
+                        "name": "ens15f1np1",
+                        "pciAddress": "0000:3a:00.1",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp159s0f0np0"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fc:6e",
+                        "mtu": 1500,
+                        "name": "ens3f0np0",
+                        "pciAddress": "0000:9f:00.0",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp159s0f1np1"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fc:6f",
+                        "mtu": 1500,
+                        "name": "ens3f1np1",
+                        "pciAddress": "0000:9f:00.1",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    }
+                ],
+                "syncStatus": "Succeeded",
+                "system": {
+                    "rdmaMode": "shared"
+                }
+            }
+        },
+        {
+            "apiVersion": "sriovnetwork.openshift.io/v1",
+            "kind": "SriovNetworkNodeState",
+            "metadata": {
+                "annotations": {
+                    "sriovnetwork.openshift.io/current-state": "Idle",
+                    "sriovnetwork.openshift.io/desired-state": "Idle"
+                },
+                "creationTimestamp": "2026-11-05T12:06:56Z",
+                "generation": 3,
+                "name": "appworker-1.cwl.integration.core.bos2.lab",
+                "namespace": "openshift-sriov-network-operator",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "sriovnetwork.openshift.io/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "SriovOperatorConfig",
+                        "name": "default",
+                        "uid": "1ac711da-0908-4fd5-9c62-cb770dc6e5e5"
+                    }
+                ],
+                "resourceVersion": "4607440",
+                "uid": "17e072b1-8fc7-4420-83b9-5a93721ec847"
+            },
+            "spec": {
+                "bridges": {},
+                "interfaces": [
+                    {
+                        "externallyManaged": true,
+                        "name": "ens1f0np0",
+                        "numVfs": 2,
+                        "pciAddress": "0000:12:00.0",
+                        "vfGroups": [
+                            {
+                                "deviceType": "netdevice",
+                                "isRdma": true,
+                                "policyName": "ngc809-nic2-vf1-tenant",
+                                "resourceName": "ngc809_nic2_vf1",
+                                "vfRange": "1-1"
+                            },
+                            {
+                                "deviceType": "netdevice",
+                                "policyName": "ngc809-aw1-vf0-iperf",
+                                "resourceName": "ngc809_aw1_vf0",
+                                "vfRange": "0-0"
+                            }
+                        ]
+                    }
+                ],
+                "system": {}
+            },
+            "status": {
+                "interfaces": [
+                    {
+                        "Vfs": [
+                            {
+                                "deviceID": "101e",
+                                "driver": "mlx5_core",
+                                "guid": "00:00:00:00:00:00:00:00",
+                                "mac": "3e:23:b8:c1:39:35",
+                                "mtu": 1500,
+                                "name": "ens1f0v0",
+                                "pciAddress": "0000:12:00.2",
+                                "vendor": "15b3",
+                                "vfID": 0
+                            },
+                            {
+                                "deviceID": "101e",
+                                "driver": "mlx5_core",
+                                "guid": "01:00:00:fe:ff:00:00:50",
+                                "mac": "50:00:00:00:00:01",
+                                "mtu": 1500,
+                                "name": "ens1f0v1",
+                                "pciAddress": "0000:12:00.3",
+                                "vendor": "15b3",
+                                "vfID": 1
+                            }
+                        ],
+                        "altNames": [
+                            "enp18s0f0np0"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "externallyManaged": true,
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fd:22",
+                        "mtu": 9126,
+                        "name": "ens1f0np0",
+                        "numVfs": 2,
+                        "pciAddress": "0000:12:00.0",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp18s0f1np1"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fd:23",
+                        "mtu": 9126,
+                        "name": "ens1f1np1",
+                        "pciAddress": "0000:12:00.1",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp58s0f0np0"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:2a:af:84",
+                        "mtu": 9126,
+                        "name": "ens15f0np0",
+                        "pciAddress": "0000:3a:00.0",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp58s0f1np1"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:2a:af:84",
+                        "mtu": 9126,
+                        "name": "ens15f1np1",
+                        "pciAddress": "0000:3a:00.1",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp159s0f0np0"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fa:da",
+                        "mtu": 1500,
+                        "name": "ens3f0np0",
+                        "pciAddress": "0000:9f:00.0",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    },
+                    {
+                        "altNames": [
+                            "enp159s0f1np1"
+                        ],
+                        "deviceID": "101f",
+                        "driver": "mlx5_core",
+                        "eSwitchMode": "legacy",
+                        "linkAdminState": "up",
+                        "linkSpeed": "25000 Mb/s",
+                        "linkType": "ETH",
+                        "mac": "a0:88:c2:99:fa:db",
+                        "mtu": 1500,
+                        "name": "ens3f1np1",
+                        "pciAddress": "0000:9f:00.1",
+                        "totalvfs": 8,
+                        "vendor": "15b3"
+                    }
+                ],
+                "syncStatus": "Succeeded",
+                "system": {
+                    "rdmaMode": "shared"
+                }
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

@@ -1,0 +1,57 @@
+# NGC-809 — exported live from CWL (OCP 4.22.3) on 2026-11-11 by ngc-809/tools/clean_export.py.
+# NMState: create 2 VFs on ens1f0np0 per node, trust/spoofchk and the 25 %/75 % rates
+# (VF0 6250/6250, VF1 18750/18750). Wait for NNCE Available before step 03.
+---
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: ngc809-master0-nic2-vf-partition
+spec:
+  desiredState:
+    interfaces:
+    - ethernet:
+        sr-iov:
+          total-vfs: 2
+          vfs:
+          - id: 0
+            max-tx-rate: 6250
+            min-tx-rate: 6250
+            spoof-check: false
+            trust: true
+          - id: 1
+            max-tx-rate: 18750
+            min-tx-rate: 18750
+            spoof-check: false
+            trust: true
+      name: ens1f0np0
+      state: up
+      type: ethernet
+  nodeSelector:
+    kubernetes.io/hostname: master-0.cwl.integration.core.bos2.lab
+---
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: ngc809-nic2-vf-partition
+spec:
+  desiredState:
+    interfaces:
+    - ethernet:
+        sr-iov:
+          total-vfs: 2
+          vfs:
+          - id: 0
+            max-tx-rate: 6250
+            min-tx-rate: 6250
+            spoof-check: false
+            trust: true
+          - id: 1
+            max-tx-rate: 18750
+            min-tx-rate: 18750
+            spoof-check: false
+            trust: true
+      name: ens1f0np0
+      state: up
+      type: ethernet
+  nodeSelector:
+    kubernetes.io/hostname: appworker-1.cwl.integration.core.bos2.lab

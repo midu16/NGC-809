@@ -1,0 +1,20 @@
+import sys, time, json
+sys.path.insert(0, "/opt/trex/automation/trex_control_plane/interactive")
+from trex.stl.api import *
+c = STLClient(server="127.0.0.1")
+c.connect()
+c.acquire(ports=[0], force=True)
+c.reset(ports=[0])
+print("port0 info:", {k: v for k, v in c.get_port_info(ports=[0])[0].items() if k in ("driver","link","speed","src_mac","dest","layer_mode","status","numa")})
+c.set_service_mode(ports=[0], enabled=True); c.set_l2_mode(port=0, dst_mac="60:00:00:00:00:01"); c.set_service_mode(ports=[0], enabled=False)
+pkt = Ether(src="50:00:00:00:00:01", dst="60:00:00:00:00:01")/IP(src="10.0.1.3", dst="10.0.2.4")/UDP(sport=1025, dport=12)/("x"*18)
+c.add_streams(STLStream(packet=STLPktBuilder(pkt=pkt), mode=STLTXCont(pps=10000)), ports=[0])
+c.clear_stats()
+c.start(ports=[0], duration=10)
+c.wait_on_traffic(ports=[0])
+time.sleep(2)
+s = c.get_stats()[0]
+print("port0 stats:", {k: s[k] for k in ("opackets","ipackets","obytes","ibytes","oerrors","ierrors")})
+x = c.get_xstats(0)
+print("port0 nonzero xstats:", {k: v for k, v in x.items() if v})
+c.release(ports=[0]); c.disconnect()
