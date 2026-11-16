@@ -32,6 +32,7 @@ Steps (`all` runs all of them in order; each one is also its own subcommand):
 Usage (from ngc-809/):
   tools/rate_rollout.py all                                   # site-values modes (CWL: VF1 enforced, VF0 min-only)
   tools/rate_rollout.py all --vf1-mode removed                # same, with the VF1 limits removed
+  tools/rate_rollout.py all --vf0-vlan 306                    # VF0 (iperf3) on VLAN 306 instead of 206
   tools/rate_rollout.py plan --vf0-mode enforced              # what would change
   tools/rate_rollout.py verify                                # check the current cluster against the render
   tools/rate_rollout.py test --tests iperf,conc --out runs/x  # tests only
@@ -109,13 +110,15 @@ def mode_args(a):
             out += [f"--vf{vf}-mode", getattr(a, f"vf{vf}_mode")]
         if getattr(a, f"vf{vf}_rate"):
             out += [f"--vf{vf}-rate", str(getattr(a, f"vf{vf}_rate"))]
+        if getattr(a, f"vf{vf}_vlan"):
+            out += [f"--vf{vf}-vlan", str(getattr(a, f"vf{vf}_vlan"))]
     return out
 
 
 def render(a):
     cmd = [sys.executable, os.path.join(ROOT, "tools/render.py"), a.overlay, "-o", a.dir] + mode_args(a)
     r = subprocess.run(cmd, capture_output=True, text=True)
-    sys.stdout.write("".join(l + "\n" for l in r.stdout.splitlines() if "rate mode" in l or "ERROR" in l))
+    sys.stdout.write("".join(l + "\n" for l in r.stdout.splitlines() if "rate mode" in l or "VLANs" in l or "ERROR" in l))
     if r.returncode != 0:
         raise Fail(f"render failed:\n{r.stderr}")
     a.exp = json.load(open(os.path.join(a.dir, "expected-state.json")))
@@ -203,6 +206,9 @@ def verify_cr(a):
             nad = json.loads(oc_json(f"-n {ns} get net-attach-def {net}")["spec"]["config"])
             got_nad = {k: nad[k] for k in ("min_tx_rate", "max_tx_rate") if k in nad}
             want = e["nad"][role]
+            if sn.get("vlan") != e["vlan"][role] or nad.get("vlan") != e["vlan"][role]:
+                bad.append(f"VF{vf} {net}: VLAN spec {sn.get('vlan')} NAD {nad.get('vlan')} want {e['vlan'][role]}")
+            log(f"  VF{vf} {role:6s} SriovNetwork {net:20s} vlan spec={sn.get('vlan')} NAD={nad.get('vlan')} want={e['vlan'][role]}")
             st = "ok" if got == want == got_nad else "MISMATCH"
             log(f"  VF{vf} {role:6s} SriovNetwork {net:20s} spec={got} NAD={got_nad} want={want}  {st}")
             if st != "ok":
@@ -286,7 +292,8 @@ def nads_ok(exp):
         for vf, e in exp["vfs"].items():
             for role, net in e["networks"].items():
                 nad = json.loads(oc_json(f"-n {exp['namespace']} get net-attach-def {net}")["spec"]["config"])
-                got[net] = ({k: nad[k] for k in ("min_tx_rate", "max_tx_rate") if k in nad}, e["nad"][role])
+                got[net] = ({k: nad[k] for k in ("min_tx_rate", "max_tx_rate", "vlan") if k in nad},
+                            {**e["nad"][role], "vlan": e["vlan"][role]})
         return all(g == w for g, w in got.values()), got
     return fn
 
@@ -366,7 +373,7 @@ def apply(a):
 
     # 5. SriovNetworks -> NADs
     apply_file(a, "04-sriovnetworks.yaml")
-    wait("NADs carry the expected min_tx_rate/max_tx_rate", nads_ok(exp), tries=30, delay=5)
+    wait("NADs carry the expected min_tx_rate/max_tx_rate/vlan", nads_ok(exp), tries=30, delay=5)
 
     # 6. pods
     wait("4 VF resources allocatable", resources_ok(exp), tries=40)
@@ -451,12 +458,14 @@ def main():
     for vf in (0, 1):
         ap.add_argument(f"--vf{vf}-mode", choices=("enforced", "min-only", "removed"))
         ap.add_argument(f"--vf{vf}-rate", type=int)
+        ap.add_argument(f"--vf{vf}-vlan", type=int, help=f"VF{vf} VLAN, e.g. --vf0-vlan 306 (must be in spec.allowedVlans)")
     ap.add_argument("--tests", default="iperf,conc,vf1", help="comma list of iperf,conc,vf1 (default: all)")
     ap.add_argument("--out", help="test output dir (default: runs/<timestamp>-<name>)")
     ap.add_argument("--yes", action="store_true", help="delete existing test pods without asking")
     a = ap.parse_args()
     a.overlay = os.path.abspath(a.overlay)
     suffix = "".join(f"-vf{vf}-{getattr(a, f'vf{vf}_mode')}" for vf in (0, 1) if getattr(a, f"vf{vf}_mode"))
+    suffix += "".join(f"-vf{vf}-vlan{getattr(a, f'vf{vf}_vlan')}" for vf in (0, 1) if getattr(a, f"vf{vf}_vlan"))
     a.name = a.name or os.path.basename(os.path.normpath(a.overlay)) + suffix
     a.dir = os.path.join(ROOT, "rendered", a.name)
     a.out = os.path.abspath(a.out or os.path.join(ROOT, "runs", time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-" + a.name))

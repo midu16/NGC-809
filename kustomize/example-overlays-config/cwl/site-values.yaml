@@ -26,11 +26,13 @@ spec:
     deviceId: "101f"
     totalVfs: 2
     portBandwidthGb: "25"                  # TRex PORT_BANDWIDTH_GB
-  vlan: 206                                # switch trunk VLAN on both ports
+  vlan: 206                                # default VLAN of every VF (spec.vfN.vlan overrides)
+  allowedVlans: [206, 306]                 # VLANs the switch trunks permit; render.py rejects others
 
   vf0:                                     # 25 %: iperf3
     rateMbps: 6250                         # tx rate, Mbit/s
     rateMode: min-only                     # enforced | min-only | removed (tools/render.py): min 6250 guaranteed, no max cap
+    vlan: 206                              # VF0 VLAN (206 or 306); tools/rate_rollout.py --vf0-vlan overrides
     serverAddress: 10.10.30.1/24           # iperf3-server (static IPAM; -B uses the IP part)
     clientAddress: 10.10.30.2/24           # iperf3-client
   vf1:                                     # 75 %: TRex -> testpmd -> TRex

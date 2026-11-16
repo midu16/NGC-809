@@ -26,11 +26,13 @@ spec:
     deviceId: "<pci-device-id>"            # e.g. "101f" (ConnectX-6 Lx)
     totalVfs: 0                            # <int> VFs to create on the PF (>= 2)
     portBandwidthGb: "<int>"               # PF link speed in Gbit/s, for TRex
-  vlan: 0                                  # <int> VLAN allowed on both switch ports
+  vlan: 0                                  # <int> default VLAN of every VF (spec.vfN.vlan overrides)
+  allowedVlans: []                         # optional: VLANs both switch trunks permit, e.g. [206, 306]
 
   vf0:                                     # 25 %: iperf3
     rateMbps: 0                            # <int> tx rate, Mbit/s
     rateMode: enforced                     # enforced (min = max) | min-only (no max cap) | removed (no limits)
+    vlan: 0                                # optional <int>: VF0 VLAN (default spec.vlan)
     serverAddress: <ip>/<prefix>           # iperf3-server static IP
     clientAddress: <ip>/<prefix>           # iperf3-client static IP
   vf1:                                     # 75 %: TRex -> testpmd -> TRex

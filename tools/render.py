@@ -30,6 +30,12 @@ NNCP values alone.
 render.py also writes expected-state.json (per node and VF: min/max rate, VLAN, trust and the NAD
 rate keys). tools/rate_rollout.py checks the cluster and the hosts against it.
 
+Per-VF VLAN
+-----------
+The VLAN of each VF's SriovNetworks is spec.vfN.vlan in site-values.yaml (default: spec.vlan), or
+--vf0-vlan/--vf1-vlan. If site-values has spec.allowedVlans (the VLANs both switch trunks permit), any
+other value is rejected. Example: python3 tools/render.py kustomize/example-overlays-config/cwl --vf0-vlan 306
+
 Usage (from ngc-809/):
   python3 tools/render.py kustomize/example-overlays-config/cwl                 # -> rendered/cwl/
   python3 tools/render.py kustomize/example-overlays-config/cwl --check
@@ -113,6 +119,14 @@ def apply_rate_policy(objs, policy):
             spec.update(items)
 
 
+def apply_vlan_policy(objs, vlans):
+    """Set spec.vlan on the SriovNetworks of each VF. vlans = {vf: vlan}."""
+    by = {(o["kind"], o["metadata"]["name"]): o for o in objs}
+    for vf, vlan in vlans.items():
+        for name in SRIOVNET[vf].values():
+            by[("SriovNetwork", name)]["spec"]["vlan"] = vlan
+
+
 def expected_state(objs, policy):
     """Expected NAD keys and host `ip link` VF state once the pods are attached."""
     by = {(o["kind"], o["metadata"]["name"]): o for o in objs}
@@ -144,6 +158,7 @@ def main():
     for vf in (0, 1):
         ap.add_argument(f"--vf{vf}-mode", choices=RATE_MODES, help=f"VF{vf} rate mode (default: site-values spec.vf{vf}.rateMode)")
         ap.add_argument(f"--vf{vf}-rate", type=int, help=f"VF{vf} rate in Mbit/s (default: site-values spec.vf{vf}.rateMbps)")
+        ap.add_argument(f"--vf{vf}-vlan", type=int, help=f"VF{vf} VLAN (default: site-values spec.vf{vf}.vlan, else spec.vlan)")
     a = ap.parse_args()
 
     sv_path = os.path.join(a.overlay, "site-values.yaml")
@@ -159,6 +174,17 @@ def main():
             print(f"{ts()} ERROR VF{vf} mode {mode} needs a positive integer rate (got {rate!r})", file=sys.stderr)
             return 1
         policy[vf] = (mode, rate or 0)
+    allowed = sv.get("allowedVlans")
+    vlans = {}
+    for vf in (0, 1):
+        vlan = getattr(a, f"vf{vf}_vlan") or sv.get(f"vf{vf}", {}).get("vlan") or sv.get("vlan")
+        if not isinstance(vlan, int) or not 1 <= vlan <= 4094:
+            print(f"{ts()} ERROR VF{vf} VLAN must be an integer 1-4094 (got {vlan!r})", file=sys.stderr)
+            return 1
+        if allowed and vlan not in allowed:
+            print(f"{ts()} ERROR VF{vf} VLAN {vlan} is not in spec.allowedVlans {allowed}", file=sys.stderr)
+            return 1
+        vlans[vf] = vlan
 
     out = a.out or os.path.join(ROOT, "rendered", os.path.basename(os.path.normpath(a.overlay)))
     text = subprocess.run(["kubectl", "kustomize", a.overlay], check=True, capture_output=True, text=True).stdout
@@ -170,6 +196,8 @@ def main():
         return 1
 
     apply_rate_policy(objs, policy)
+    apply_vlan_policy(objs, vlans)
+    print(f"{ts()} VLANs: " + ", ".join(f"VF{v} {n}" for v, n in vlans.items()))
     for vf, (mode, rate) in policy.items():
         mn, mx = rate_pair(mode, rate)
         print(f"{ts()} VF{vf} rate mode {mode}: min_tx_rate {mn} max_tx_rate {mx} Mbit/s (0 = no limit)")
@@ -183,7 +211,8 @@ def main():
         rest = [o for o in rest if not pred(o)]
         with open(os.path.join(out, fname), "w") as f:
             f.write(f"# NGC-809 — rendered from {os.path.relpath(a.overlay, ROOT)} by tools/render.py. Do not edit.\n")
-            f.write("# rate modes: " + ", ".join(f"VF{v} {m} {r}" for v, (m, r) in policy.items()) + "\n")
+            f.write("# rate modes: " + ", ".join(f"VF{v} {m} {r}" for v, (m, r) in policy.items())
+                    + "; VLANs: " + ", ".join(f"VF{v} {n}" for v, n in vlans.items()) + "\n")
             for o in sel:
                 f.write("---\n" + yaml.safe_dump(o, sort_keys=False, width=120))
         print(f"{ts()} wrote {os.path.relpath(os.path.join(out, fname), ROOT)} ({len(sel)} objects)")

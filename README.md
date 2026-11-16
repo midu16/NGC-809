@@ -142,6 +142,13 @@ tools/rate_rollout.py verify                       # check the cluster + hosts a
 tools/rate_rollout.py test --tests iperf,conc,vf1 --out runs/<name>
 ```
 
+**VF0 VLAN.** `spec.vf0.vlan` in `site-values.yaml` (default `spec.vlan` = 206), or `--vf0-vlan 306` on `render.py` / `rate_rollout.py`, sets the VLAN of the two VF0 SriovNetworks (`ngc809-vf0-25-*`). `spec.allowedVlans: [206, 306]` lists the VLANs that the switch trunks must permit. Any other value is rejected at render time. A VLAN change only touches 04 (not the NNCP or the SNNPs). The rollout re-creates the pods so that sriov-cni programs the new VLAN, and `verify` checks the VLAN in the SriovNetwork, the NAD and host `ip link`.
+
+```bash
+tools/rate_rollout.py all --yes --vf0-vlan 306     # VF0 iperf3 on VLAN 306, VF1 stays on 206 (rendered/cwl-vf0-vlan306/)
+tools/rate_rollout.py all --yes                    # back to the site-values default (206)
+```
+
 What `apply` does:
 - It refuses to run if the 03 SriovNetworkNodePolicies differ from the cluster (pitfall 1).
 - It deletes the four test pods, because a running pod keeps the rates it attached with.
