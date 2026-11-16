@@ -13,13 +13,13 @@ spec:
           total-vfs: 0       # spec.nic.totalVfs
           vfs:
           - id: 0
-            max-tx-rate: 0   # spec.vf0.rateMbps
-            min-tx-rate: 0   # spec.vf0.rateMbps
+            max-tx-rate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
+            min-tx-rate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
             spoof-check: false
             trust: true
           - id: 1
-            max-tx-rate: 0   # spec.vf1.rateMbps
-            min-tx-rate: 0   # spec.vf1.rateMbps
+            max-tx-rate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
+            min-tx-rate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
             spoof-check: false
             trust: true
       name: <pf-name>
@@ -40,13 +40,13 @@ spec:
           total-vfs: 0       # spec.nic.totalVfs
           vfs:
           - id: 0
-            max-tx-rate: 0   # spec.vf0.rateMbps
-            min-tx-rate: 0   # spec.vf0.rateMbps
+            max-tx-rate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
+            min-tx-rate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
             spoof-check: false
             trust: true
           - id: 1
-            max-tx-rate: 0   # spec.vf1.rateMbps
-            min-tx-rate: 0   # spec.vf1.rateMbps
+            max-tx-rate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
+            min-tx-rate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
             spoof-check: false
             trust: true
       name: <pf-name>

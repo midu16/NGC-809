@@ -29,11 +29,13 @@ spec:
   vlan: 0                                  # <int> VLAN allowed on both switch ports
 
   vf0:                                     # 25 %: iperf3
-    rateMbps: 0                            # <int> min = max tx rate, Mbit/s
+    rateMbps: 0                            # <int> tx rate, Mbit/s
+    rateMode: enforced                     # enforced (min = max) | min-only (no max cap) | removed (no limits)
     serverAddress: <ip>/<prefix>           # iperf3-server static IP
     clientAddress: <ip>/<prefix>           # iperf3-client static IP
   vf1:                                     # 75 %: TRex -> testpmd -> TRex
-    rateMbps: 0                            # <int>
+    rateMbps: 0                            # <int> tx rate, Mbit/s
+    rateMode: enforced                     # enforced | min-only | removed
     serverSubnet: <cidr>                   # host-local IPAM, testpmd side
     clientSubnet: <cidr>                   # host-local IPAM, trex side
     trexMac: <mac>                         # Multus MAC of trex net1

@@ -10,8 +10,8 @@ metadata:
 spec:
   ipam: '{"type": "host-local","ranges": [[{"subnet": "<vf1-server-subnet>"}]],"dataDir": "/run/my-orchestrator/container-ipam-state-sink"}'
   logLevel: info
-  maxTxRate: 0   # spec.vf1.rateMbps
-  minTxRate: 0   # spec.vf1.rateMbps
+  maxTxRate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
+  minTxRate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
   networkNamespace: <namespace>
   resourceName: ngc809_srv_nic2_vf
   spoofChk: 'off'
@@ -28,8 +28,8 @@ metadata:
 spec:
   ipam: '{"type": "host-local","ranges": [[{"subnet": "<vf1-client-subnet>"}]],"dataDir": "/run/my-orchestrator/container-ipam-state-1"}'
   logLevel: info
-  maxTxRate: 0   # spec.vf1.rateMbps
-  minTxRate: 0   # spec.vf1.rateMbps
+  maxTxRate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
+  minTxRate: 0   # spec.vf1.rateMbps (+ rateMode, applied by tools/render.py)
   networkNamespace: <namespace>
   resourceName: ngc809_nic2_vf1
   spoofChk: 'off'
@@ -46,8 +46,8 @@ metadata:
 spec:
   ipam: '{"type": "static", "addresses": [{"address": "<vf0-server-address>"}]}'
   logLevel: info
-  maxTxRate: 0   # spec.vf0.rateMbps
-  minTxRate: 0   # spec.vf0.rateMbps
+  maxTxRate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
+  minTxRate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
   networkNamespace: <namespace>
   resourceName: ngc809_m0_vf0
   spoofChk: 'off'
@@ -64,8 +64,8 @@ metadata:
 spec:
   ipam: '{"type": "static", "addresses": [{"address": "<vf0-client-address>"}]}'
   logLevel: info
-  maxTxRate: 0   # spec.vf0.rateMbps
-  minTxRate: 0   # spec.vf0.rateMbps
+  maxTxRate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
+  minTxRate: 0   # spec.vf0.rateMbps (+ rateMode, applied by tools/render.py)
   networkNamespace: <namespace>
   resourceName: ngc809_aw1_vf0
   spoofChk: 'off'

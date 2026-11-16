@@ -1,6 +1,7 @@
 ---
 # NGC-809 on CWL (OCP 4.22.3) — the ONLY file with site-specific values.
-# Values match the live export of 2026-11-11 (see ../../../_live-export/).
+# Values match the live export of 2026-11-11 (see ../../../_live-export/), except the rate modes
+# (2026-11-16: VF1 18750/18750 enforced, VF0 maxTxRate 6250 removed -> min-only).
 # Not applied to the cluster (local-config); consumed by ../../components/site-values.
 apiVersion: ngc809.local/v1
 kind: SiteValues
@@ -28,11 +29,13 @@ spec:
   vlan: 206                                # switch trunk VLAN on both ports
 
   vf0:                                     # 25 %: iperf3
-    rateMbps: 6250                         # min = max tx rate
+    rateMbps: 6250                         # tx rate, Mbit/s
+    rateMode: min-only                     # enforced | min-only | removed (tools/render.py): min 6250 guaranteed, no max cap
     serverAddress: 10.10.30.1/24           # iperf3-server (static IPAM; -B uses the IP part)
     clientAddress: 10.10.30.2/24           # iperf3-client
   vf1:                                     # 75 %: TRex -> testpmd -> TRex
-    rateMbps: 18750
+    rateMbps: 18750                        # tx rate, Mbit/s
+    rateMode: enforced                     # min = max = 18750 (hard 75 % cap)
     serverSubnet: 10.0.2.0/24              # host-local IPAM, testpmd side
     clientSubnet: 10.0.1.0/24              # host-local IPAM, trex side
     trexMac: 50:00:00:00:00:01             # Multus MAC of trex net1 (also in trex-tests)

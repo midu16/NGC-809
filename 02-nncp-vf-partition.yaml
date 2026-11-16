@@ -1,6 +1,8 @@
 # NGC-809 — exported live from CWL (OCP 4.22.3) on 2026-11-11 by ngc-809/tools/clean_export.py.
 # NMState: create 2 VFs on ens1f0np0 per node, trust/spoofchk and the 25 %/75 % rates
-# (VF0 6250/6250, VF1 18750/18750). Wait for NNCE Available before step 03.
+# Updated 2026-11-16 (tools/render.py rate modes): VF1 18750/18750 enforced; VF0 0/0 (cap removed). The VF0
+# min 6250 guarantee is programmed by sriov-cni from SriovNetwork minTxRate when the iperf3 pod attaches.
+# NetworkManager cannot hold a min without a max (see tools/render.py). Wait for NNCE Available before step 03.
 ---
 apiVersion: nmstate.io/v1
 kind: NodeNetworkConfigurationPolicy
@@ -14,8 +16,8 @@ spec:
           total-vfs: 2
           vfs:
           - id: 0
-            max-tx-rate: 6250
-            min-tx-rate: 6250
+            max-tx-rate: 0
+            min-tx-rate: 0
             spoof-check: false
             trust: true
           - id: 1
@@ -41,8 +43,8 @@ spec:
           total-vfs: 2
           vfs:
           - id: 0
-            max-tx-rate: 6250
-            min-tx-rate: 6250
+            max-tx-rate: 0
+            min-tx-rate: 0
             spoof-check: false
             trust: true
           - id: 1

@@ -1,8 +1,8 @@
 # CRs and tools to re-create the NGC-809 25 % / 75 % SR-IOV VF split tests
 
 This directory has everything needed to rebuild and re-run the testing: 
-- **VF0 = 25 %** (6250 Mbit/s): `iperf3`;
-- **VF1 = 75 %** (18750 Mbit/s): `TRex → testpmd → TRex`;
+- **VF0 = 25 %** (6250 Mbit/s): `iperf3`. Since 2026-11-16 this is a **guaranteed minimum only**: `minTxRate: 6250`, with `maxTxRate` removed;
+- **VF1 = 75 %** (18750 Mbit/s): `TRex → testpmd → TRex`. Hard limit: `minTxRate = maxTxRate = 18750`;
 - both together on the 25G `ens1f0np0` uplinks of **master-0** and **appworker-1**.
 
 ---
@@ -12,9 +12,9 @@ This directory has everything needed to rebuild and re-run the testing:
 | Path | What | Objects |
 |---|---|---|
 | `01-namespace.yaml` | Namespace | `dpdk` |
-| `02-nncp-vf-partition.yaml` | NMState: 2 VFs on `ens1f0np0`; VF0 6250/6250, VF1 18750/18750; trust on; spoof-check off | NNCP `ngc809-master0-nic2-vf-partition` (master-0), `ngc809-nic2-vf-partition` (appworker-1) |
+| `02-nncp-vf-partition.yaml` | NMState: 2 VFs on `ens1f0np0`; VF0 0/0 (no cap; the min 6250 comes from sriov-cni, §3.2), VF1 18750/18750; trust on; spoof-check off | NNCP `ngc809-master0-nic2-vf-partition` (master-0), `ngc809-nic2-vf-partition` (appworker-1) |
 | `03-sriovnetworknodepolicies.yaml` | SR-IOV resources (`externallyManaged: true`, `netdevice`) | `ngc809-master0-nic2-vf` (m0 VF1 → `ngc809_srv_nic2_vf`, RDMA), `ngc809-nic2-vf1-tenant` (aw1 VF1 → `ngc809_nic2_vf1`, RDMA), `ngc809-m0-vf0-iperf` (m0 VF0 → `ngc809_m0_vf0`), `ngc809-aw1-vf0-iperf` (aw1 VF0 → `ngc809_aw1_vf0`) |
-| `04-sriovnetworks.yaml` | Attachments, generating the NADs in `dpdk` | `ngc809-tenant-75` and `ngc809-master0-sink` (VLAN 206, trust on, 18750/18750, host-local), `ngc809-vf0-25-aw1` and `ngc809-vf0-25-m0` (VLAN 206, trust off, 6250/6250, static 10.10.30.2 / .1) |
+| `04-sriovnetworks.yaml` | Attachments, generating the NADs in `dpdk` | `ngc809-tenant-75` and `ngc809-master0-sink` (VLAN 206, trust on, 18750/18750, host-local), `ngc809-vf0-25-aw1` and `ngc809-vf0-25-m0` (VLAN 206, trust off, `minTxRate: 6250` only, static 10.10.30.2 / .1) |
 | `05-configmaps-trex.yaml` | TRex config template, `PORT_BANDWIDTH_GB=25`, STL profile | `trex-config-template`, `trex-info-for-config`, `trex-tests` |
 | `06-pods-trex-testpmd.yaml` | VF1 workloads | `trex` (appworker-1, `quay.io/midu/trex:2.87-ofed5.8`, 4 exclusive CPUs, 2 Gi 1G-hugepages, runtimeClass `performance-pao-worker-profile-appworker-mcp-a`), `testpmd` (master-0, `…/nrho-26.8/rhel9/testpmd:25.11-mlx5`) |
 | `07-pods-iperf3.yaml` | VF0 workloads | `iperf3-server` (master-0, `iperf3 -s -B 10.10.30.1`), `iperf3-client` (appworker-1, `sleep infinity`). Image: `quay.io/midu/iperf3@sha256:6e84f0fd…cb05c` |
@@ -25,7 +25,8 @@ This directory has everything needed to rebuild and re-run the testing:
 | `tools/restore_pod_files.sh` | Copy `pod-files/` into the pods; check TRex CPUs and VF against `trex_cfg.yaml` | — |
 | `tools/start_apps.sh` | Start the TRex server and testpmd, re-learn MACs, 64 B sanity run; `stop` stops testpmd and clears PROMISC | — |
 | `kustomize/` | Kustomize form of 01–07, using the same layout as [telco-reference `example-overlays-config`](https://github.com/openshift-kni/telco-reference/tree/main/telco-hub/configuration/example-overlays-config). All site values sit in one file per overlay, `site-values.yaml` (§3.1) | `reference-crs/` (base, placeholders), `components/site-values/` (replacements), `example-overlays-config/{cwl,template}/` |
-| `tools/render.py` | Renders an overlay into staged 01–07 files under `rendered/<site>/`. Fails on any unresolved `<placeholder>`. `--check` compares the output with the root 01–07 | — |
+| `tools/render.py` | Renders an overlay into staged 01–07 files plus `expected-state.json` under `rendered/<site>/`. Applies the per-VF **rate mode** (§3.2). Fails on any unresolved `<placeholder>`. `--check` compares the output with the root 01–07 | — |
+| `tools/rate_rollout.py` | Rolls a rate profile out to CWL: render → plan → apply NNCP/SriovNetwork → check OpenShift + hosts → re-create the pods → check again → start the apps → README §5 tests (§3.2) | — |
 | `tools/clean_export.py` | Regenerates 01–07 and `_reference/` from `_live-export/` | — |
 | `_reference/` | **Do not apply.** Kept for context | the generated NADs; `SriovOperatorConfig default` (`disableDrain: true`); `PerformanceProfile pao-worker-profile-appworker-mcp-a` |
 | `_live-export/` | Raw `oc get -o json` of every object, host `ip -d link show ens1f0np0` from both nodes, operator CSV versions | evidence |
@@ -67,9 +68,9 @@ Manual equivalent, in this order:
 6. `oc apply -f 06-pods-trex-testpmd.yaml -f 07-pods-iperf3.yaml`. Wait until the pods are Ready.
 7. `tools/restore_pod_files.sh`.
 
-Expected host state on **both** nodes (`ip link show ens1f0np0`):
+Expected host state on **both** nodes (`ip link show ens1f0np0`). `ip link` does not print a rate that is 0:
 ```
-vf 0  …, vlan 206, max_tx_rate 6250Mbps,  min_tx_rate 6250Mbps,  spoof checking off, trust off   (iperf3 pod)
+vf 0  …, vlan 206, min_tx_rate 6250Mbps,  spoof checking off, trust off                          (iperf3 pod)
 vf 1  …, vlan 206, max_tx_rate 18750Mbps, min_tx_rate 18750Mbps, spoof checking off, trust on    (trex / testpmd pod)
 ```
 
@@ -112,6 +113,47 @@ tools/apply.sh rendered/cwl                                                # sta
 
 Do **not** run `oc apply -k` on the overlay. It applies everything at once, and pitfalls 1 and 3 (§4) need the staged order. For a new site, copy `template/` to `<site>/`, fill in `site-values.yaml` and render it. `render.py` refuses to write output while any placeholder is left.
 
+### 3.2 Rate modes and the rollout automation
+
+kustomize can only set values. It cannot delete a field, so `tools/render.py` applies the tx-rate policy of each VF after `kubectl kustomize`. Set the mode in `site-values.yaml` (`spec.vf0.rateMode`, `spec.vf1.rateMode`), or override it with `--vf0-mode/--vf1-mode` (and the rate with `--vf0-rate/--vf1-rate`):
+
+| Mode | SriovNetwork | NNCP | Host VF once the pod is attached |
+|---|---|---|---|
+| `enforced` | `minTxRate = maxTxRate = rate` | `min-tx-rate = max-tx-rate = rate` | min = max = rate |
+| `min-only` | `minTxRate = rate`, **no** `maxTxRate` | `min-tx-rate: 0`, `max-tx-rate: 0` | min = rate, no cap (programmed by sriov-cni over netlink) |
+| `removed` | neither field | both `0` | no limits |
+
+The NNCP always gets explicit `0`s. nmstate leaves a key it is not given unchanged, so leaving the key out would keep the old limit on the NIC.
+
+In `min-only` mode, the NNCP cannot carry the guarantee. Two attempts on CWL (nmstate 2.2.60) failed, and nmstate rolled both back:
+- `min-tx-rate: 6250` with `max-tx-rate: 0` is rejected by NetworkManager: `invalid VF 0: min_tx_rate is greater than max_tx_rate`.
+- `min-tx-rate: 6250` with no max key fails verification: `vfs[0].min-tx-rate desire '6250', current '0'`.
+
+So the host baseline is 0/0, and sriov-cni programs min 6250 / max 0 when the iperf3 pod attaches. A `kubectl kustomize` view still shows `rateMbps` in both fields; only `render.py` applies the modes.
+
+The CWL default (`cwl/site-values.yaml`, and the root 02/04) is **VF1 `enforced` 18750, VF0 `min-only` 6250**.
+
+```bash
+tools/rate_rollout.py plan                         # oc diff of 02/03/04 against CWL, changes nothing
+tools/rate_rollout.py all --yes                    # apply + verify + re-deploy pods + verify + start apps + tests
+tools/rate_rollout.py all --yes --vf1-mode removed # same, with the VF1 limits removed (rendered/cwl-vf1-removed/)
+tools/rate_rollout.py all --yes --vf0-mode enforced  # back to the 2026-11-11 6250/6250 cap
+tools/rate_rollout.py verify                       # check the cluster + hosts against the render
+tools/rate_rollout.py test --tests iperf,conc,vf1 --out runs/<name>
+```
+
+What `apply` does:
+- It refuses to run if the 03 SriovNetworkNodePolicies differ from the cluster (pitfall 1).
+- It deletes the four test pods, because a running pod keeps the rates it attached with.
+- It applies 02 and waits until each NNCE is `Available` at the new NNCP generation, then checks host `ip link` against the NNCP rates.
+- It applies 04 and waits until the NADs carry exactly the expected `min_tx_rate`/`max_tx_rate` keys.
+- It waits for the VF resources, then re-creates the trex/testpmd/iperf3 pods.
+- It restores `pod-files/`. If the trex pod received other CPUs or another VF, it writes an adjusted `/etc/trex_cfg.yaml` into the pod.
+
+`verify` compares the SriovNetwork spec, the NAD config, the NNCP spec, the NNS and host `ip link` (rates, VLAN, trust) with `expected-state.json`.
+
+`test` runs T1–T6 (iperf3, VF0 alone), `tools/start_apps.sh`, C1/C2 (concurrent), then stops testpmd and runs the VF1 e2e loop (3.3). The logs and `SUMMARY.txt` go to `runs/<timestamp>-<name>/`, which git ignores.
+
 `tools/apply.sh` takes the manifest directory as an argument. Its wait checks still use the CWL hostnames, and the restore/start/test tools under `tools/` and `scripts/` still hardcode the CWL values.
 
 ---
@@ -143,13 +185,13 @@ Each driver prints per-second VF0/VF1/PHY hardware rates for both nodes and a st
 | 3.2 T3 | VF0 25 %, both directions | `scripts/ngc809_iperf_split_test.sh T3_tcp_bidir_P4 <out> -- -P 4 -t 20 --bidir` |
 | 3.2 T4 | VF0 25 %, UDP 12 G offered | `scripts/ngc809_iperf_split_test.sh T4_udp_fwd_12G <out> -- -u -b 3G -P 4 -l 1448 -t 20` |
 | 3.2 T5/T6 | 1 vs 8 streams | `… T5_tcp_fwd_P1 <out> -- -P 1 -t 20` / `… T6_tcp_fwd_P8 <out> -- -P 8 -t 20` |
-| 3.2 T7 | Control: VF0 uncapped | Remove the cap: `oc debug node/appworker-1… -- chroot /host ip link set ens1f0np0 vf 0 min_tx_rate 0 max_tx_rate 0`. Run `… T7_uncapped <out> -- -P 4 -t 20`. **Restore** with `ip link set ens1f0np0 vf 0 max_tx_rate 6250 min_tx_rate 6250` |
+| 3.2 T7 | Control: VF0 uncapped (with VF0 `min-only`, the default since 2026-11-16, VF0 is already uncapped) | Remove the cap: `oc debug node/appworker-1… -- chroot /host ip link set ens1f0np0 vf 0 min_tx_rate 0 max_tx_rate 0`. Run `… T7_uncapped <out> -- -P 4 -t 20`. **Restore** with `ip link set ens1f0np0 vf 0 max_tx_rate 6250 min_tx_rate 6250` (`enforced`) or `max_tx_rate 0 min_tx_rate 6250` (`min-only`) |
 | 3.3 | VF1 75 %, TRex → testpmd → TRex at 100 % | `M0VF=1 scripts/ngc809_e2e_cap_test.sh loop <out>`. This starts `/tmp/run_testpmd.sh` (256 descriptors) itself. For zero loss, run `run_testpmd_bigring.sh` and drive TRex with `oc -n dpdk exec trex -- bash -c 'cd /opt/trex; python3 /tmp/trex_e2e_run.py 1500 100% 10'` |
 | 3.4 C1 | **Concurrent:** iperf3 aw1 → m0 + TRex | `tools/start_apps.sh`, then `scripts/ngc809_concurrent_split_test.sh C1 <out> -- -P 4` |
 | 3.4 C2 | **Concurrent:** iperf3 both directions + TRex | `scripts/ngc809_concurrent_split_test.sh C2 <out> -- -P 4 --bidir` |
 | — | Stop testpmd, clear PROMISC | `tools/start_apps.sh stop` |
 
-Expected results (2026-11-11):
+Expected results (2026-11-11, both VFs `enforced`). Runs made with other rate modes are in their `runs/*/SUMMARY.txt`:
 - **VF0 alone:** 6.22 Gbit/s L2. iperf3 reports about 5.97 Gbit/s of payload.
 - **VF0 uncapped:** 24.54 Gbit/s.
 - **VF1 alone:** 18.67 Gbit/s.
